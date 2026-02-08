@@ -34,18 +34,19 @@
             transition: transform 0.1s ease; font-size: 0.9rem;
         }
 
+        /* --- Header ve Logo Alanı (v2.2.1 stili) --- */
         header { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; flex-shrink: 0; }
         .logo-area { display: flex; align-items: center; gap: 12px; }
         
-        /* Logo Stili */
-        .header-logo {
-            width: 35px;
-            height: 35px;
-            object-fit: contain;
-            display: block; /* Gizli kalmaması için */
+        header img { 
+            width: 35px; 
+            height: 35px; 
+            border-radius: 6px; 
+            object-fit: cover;
+            display: block;
         }
 
-        h1 { font-family: 'Montserrat'; font-size: 1.4rem; font-weight: 800; margin: 0; line-height: 1.2; }
+        h1 { font-family: 'Montserrat'; font-size: 1.4rem; font-weight: 800; margin: 0; line-height: 1.1; }
 
         .theme-toggle {
             background: var(--card); border: 1px solid var(--border); color: var(--text);
@@ -83,7 +84,7 @@
 
     <header>
         <div class="logo-area">
-            <img src="logo.png" alt="Logo" class="header-logo" onerror="this.style.background='#ccc'">
+            <img src="logo.png" alt="Logo">
             <h1>Odak Defterim Beta<br>v2.8.0</h1>
         </div>
         <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">🌙 Gece Modu</button>
@@ -104,13 +105,13 @@
         let isPulling = false;
 
         document.addEventListener('touchstart', (e) => {
-            if(scrollArea.scrollLeft === 0) touchStart = e.touches[0].pageY;
+            touchStart = e.touches[0].pageY;
         }, {passive: true});
 
         document.addEventListener('touchmove', (e) => {
             const touchCurrent = e.touches[0].pageY;
             const diff = touchCurrent - touchStart;
-            if (diff > 0 && scrollArea.scrollLeft === 0) {
+            if (window.scrollY <= 0 && diff > 0) {
                 isPulling = true;
                 const pullHeight = Math.min(diff / 2, 70); 
                 ptr.style.transform = `translateY(${-100 + (pullHeight * 1.5)}%)`;
@@ -174,10 +175,10 @@
 
         function yeniGun() {
             const t = new Date(); t.setDate(t.getDate() + gunler.length);
-            gunler.push({ tarih: t.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', weekday: 'short' }), gorevler: [] });
+            gunler.push({ tarih: t.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }), gorevler: [] });
             ciz();
         }
-        function kartSil(idx) { if(confirm('Emin misin?')) { gunler.splice(idx, 1); ciz(); } }
+        function kartSil(idx) { gunler.splice(idx, 1); ciz(); }
         function ekle(e, idx) {
             if(!e.target.value.trim()) return;
             gunler[idx].gorevler.push({ txt: e.target.value.trim(), ok: false });
