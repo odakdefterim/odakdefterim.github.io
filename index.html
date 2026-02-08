@@ -21,11 +21,12 @@
             margin: 0; padding: 0; height: 100vh; width: 100vw;
             background-color: var(--bg); color: var(--text);
             font-family: 'Inter', sans-serif; overflow: hidden;
-            overscroll-behavior-y: contain;
+            overscroll-behavior-y: contain; /* Tarayıcı varsayılanını engeller */
         }
 
-        body { display: flex; flex-direction: column; }
+        body { display: flex; flex-direction: column; position: relative; }
 
+        /* --- Yenileme İndikatörü --- */
         #pull-to-refresh {
             position: absolute; top: 0; left: 0; width: 100%; height: 60px;
             display: flex; align-items: center; justify-content: center;
@@ -34,75 +35,39 @@
             transition: transform 0.1s ease; font-size: 0.9rem;
         }
 
-        header { 
-            display: flex; align-items: center; justify-content: space-between; 
-            padding: 15px 30px; flex-shrink: 0; background: var(--card);
-            border-bottom: 1px solid var(--border);
-        }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; flex-shrink: 0; }
         .logo-area { display: flex; align-items: center; gap: 12px; }
-        /* Logo için placeholder rengi ekledim, resim yoksa bile alan kaplar */
-        .logo-img { width: 35px; height: 35px; border-radius: 6px; background: var(--accent); object-fit: cover; }
-        h1 { font-family: 'Montserrat'; font-size: 1.2rem; font-weight: 800; margin: 0; }
+        header img { width: 35px; height: 35px; border-radius: 6px; }
+        h1 { font-family: 'Montserrat'; font-size: 1.4rem; font-weight: 800; margin: 0; }
 
         .theme-toggle {
-            background: var(--bg); border: 1px solid var(--border); color: var(--text);
-            padding: 8px 14px; border-radius: 20px; cursor: pointer; font-size: 0.75rem;
+            background: var(--card); border: 1px solid var(--border); color: var(--text);
+            padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.8rem;
+            box-shadow: var(--shadow);
         }
 
         .board-wrapper { 
             flex-grow: 1; overflow-x: auto; overflow-y: hidden; 
-            display: flex; align-items: flex-start; padding: 20px;
+            display: flex; align-items: center; padding: 0 40px;
             -webkit-overflow-scrolling: touch;
         }
 
-        /* Kartların üst üste binmemesi için düzenleme */
-        .board { 
-            display: flex; 
-            flex-direction: row; 
-            gap: 20px; 
-            height: auto; 
-            min-height: 400px;
-        }
-
-        .card, .silhouette { 
-            width: 300px; 
-            height: 400px; /* Sabit yükseklik verdik */
-            border-radius: 12px; 
-            flex-shrink: 0; 
-            position: relative; 
-            display: flex; 
-            flex-direction: column;
-        }
-
-        .card { background: var(--card); padding: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); box-sizing: border-box; }
+        .board { display: grid; grid-template-rows: repeat(2, 290px); grid-auto-flow: column; gap: 20px; height: 85%; }
+        .card, .silhouette { width: 280px; height: 280px; border-radius: 12px; flex-shrink: 0; position: relative; }
+        .card { background: var(--card); padding: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: var(--shadow); box-sizing: border-box; }
         .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
-        
-        .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; padding-right: 5px; }
-        .task-item { display: flex; align-items: flex-start; gap: 8px; margin: 10px 0; font-size: 0.9rem; line-height: 1.4; }
-        .task-item input { margin-top: 3px; flex-shrink: 0; }
-        
+        .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; }
+        .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; }
         .done { text-decoration: line-through; opacity: 0.4; }
-        
-        .input-box { 
-            background: var(--input); border: 1px solid var(--border); 
-            color: var(--text); padding: 12px; border-radius: 8px; 
-            width: 100%; box-sizing: border-box; outline: none; margin-top: auto;
-        }
+        .input-box { background: var(--input); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; width: 100%; box-sizing: border-box; outline: none; }
+        .silhouette { border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--border); }
 
-        .silhouette { 
-            border: 2px dashed var(--border); 
-            background: transparent;
-            align-items: center; justify-content: center; 
-            cursor: pointer; color: var(--border); font-weight: 600;
+        @media (max-width: 800px) {
+            header { padding: 15px 20px; }
+            .board { display: flex; flex-direction: row; align-items: center; height: auto; }
+            .card, .silhouette { width: 85vw; height: 350px; margin-right: 15px; }
         }
-
-        @media (max-width: 600px) {
-            .card, .silhouette { width: 80vw; }
-            header { padding: 10px 20px; }
-            h1 { font-size: 1rem; }
-        }
-
-        footer { padding: 10px; text-align: center; font-size: 0.7rem; opacity: 0.5; }
+        footer { padding: 10px; text-align: center; font-size: 0.75rem; opacity: 0.5; border-top: 1px solid var(--border); }
     </style>
 </head>
 <body data-theme="dark">
@@ -111,7 +76,7 @@
 
     <header>
         <div class="logo-area">
-            <img src="logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
+            <img src="logo.png" alt="Logo">
             <h1>Odak Defteri v2.8.0</h1>
         </div>
         <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">🌙 Gece Modu</button>
@@ -139,17 +104,19 @@
         document.addEventListener('touchmove', (e) => {
             const touchCurrent = e.touches[0].pageY;
             const diff = touchCurrent - touchStart;
+
+            // En üstteysen ve aşağı çekiyorsan tetiklenir
             if (window.scrollY <= 0 && diff > 0) {
                 isPulling = true;
-                const pullHeight = Math.min(diff / 2, 80);
-                ptr.style.transform = `translateY(${-100 + (pullHeight * 1.2)}%)`;
-                ptr.innerText = diff > 150 ? "Bırak ve Yenile" : "Aşağı çek...";
+                const pullHeight = Math.min(diff / 2, 70); 
+                ptr.style.transform = `translateY(${-100 + (pullHeight * 1.5)}%)`;
+                ptr.innerText = diff > 180 ? "Bırak ve Yenile" : "Aşağı çekerek yenile...";
             }
         }, {passive: true});
 
         document.addEventListener('touchend', (e) => {
             const diff = e.changedTouches[0].pageY - touchStart;
-            if (isPulling && diff > 150) {
+            if (isPulling && diff > 180) {
                 ptr.style.transform = `translateY(0)`;
                 ptr.innerText = "Yükleniyor...";
                 setTimeout(() => location.reload(), 500);
@@ -159,14 +126,15 @@
             isPulling = false;
         });
 
-        // Mouse tekerleği ile yatay kaydırma
+        // Yatay Kaydırma
         scrollArea.addEventListener('wheel', (e) => {
             if (e.deltaY !== 0) {
                 e.preventDefault();
-                scrollArea.scrollLeft += (e.deltaY * 1.5);
+                scrollArea.scrollLeft += (e.deltaY * 0.8);
             }
         }, { passive: false });
 
+        // Tema ve Çizim Fonksiyonları
         function temaSet(tema) {
             document.body.setAttribute('data-theme', tema);
             localStorage.setItem('tema', tema);
@@ -183,14 +151,14 @@
                 card.className = 'card';
                 card.innerHTML = `
                     <button class="delete-btn" onclick="kartSil(${gIdx})">&times;</button>
-                    <div style="font-weight:700; color:var(--accent); margin-bottom:10px;">${gun.tarih}</div>
+                    <div style="font-weight:bold; margin-bottom:10px;">${gun.tarih}</div>
                     <div class="task-list">${gun.gorevler.map((t, tIdx) => `
                         <div class="task-item ${t.ok ? 'done' : ''}">
                             <input type="checkbox" ${t.ok ? 'checked' : ''} onchange="tamam(${gIdx},${tIdx})">
                             <span>${t.txt}</span>
                         </div>`).join('')}
                     </div>
-                    <input type="text" class="input-box" placeholder="Görev oluştur..." onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
+                    <input type="text" class="input-box" placeholder="Görev..." onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
                 `;
                 board.appendChild(card);
             });
@@ -204,12 +172,10 @@
 
         function yeniGun() {
             const t = new Date(); t.setDate(t.getDate() + gunler.length);
-            gunler.push({ tarih: t.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', weekday: 'short' }), gorevler: [] });
+            gunler.push({ tarih: t.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }), gorevler: [] });
             ciz();
-            // Yeni gün eklenince en sağa kaydır
-            setTimeout(() => { scrollArea.scrollLeft = scrollArea.scrollWidth; }, 100);
         }
-        function kartSil(idx) { if(confirm('Bu günü silmek istediğine emin misin?')) { gunler.splice(idx, 1); ciz(); } }
+        function kartSil(idx) { gunler.splice(idx, 1); ciz(); }
         function ekle(e, idx) {
             if(!e.target.value.trim()) return;
             gunler[idx].gorevler.push({ txt: e.target.value.trim(), ok: false });
