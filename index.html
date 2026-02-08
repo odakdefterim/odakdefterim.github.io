@@ -353,11 +353,12 @@
             `).join('');
         }
 
-        function kartSil(idx) {
-            gunler.splice(idx, 1); 
-            ciz();
-        }
-
+        function deleteNote(idx) { 
+            if(confirm('Notu silmek istiyor musunuz?')) {
+                notlar.splice(idx, 1); 
+                localStorage.setItem('odak_notlar_v9', JSON.stringify(notlar)); 
+                drawNotes(); 
+            }
         }
 
         ciz();
