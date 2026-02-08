@@ -3,188 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Odak Defteri Retro v2.9.0</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Odak Defteri Beta v2.9.2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #09090b;
-            --card-bg: #18181b;
-            --accent: #8b5cf6; /* Eski meşhur mor tonu */
-            --accent-hover: #a78bfa;
-            --text: #f4f4f5;
-            --text-dim: #a1a1aa;
-            --border: #27272a;
-            --danger: #ef4444;
+            --bg: #f0f2f5; --card: #ffffff; --accent: #0969da; --text: #1f2328; 
+            --border: #d0d7de; --danger: #cf222e; --warning: #9a6700; 
+            --input: #ffffff; --shadow: 0 6px 16px rgba(0,0,0,0.08);
+            --sidebar-w: 280px;
+        }
+        [data-theme="dark"] {
+            --bg: #0d1117; --card: #161b22; --accent: #58a6ff; --text: #c9d1d9; 
+            --border: #30363d; --danger: #f85149; --warning: #d29922; 
+            --input: #010409; --shadow: none;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body {
+            margin: 0; padding: 0; height: 100vh; width: 100vw;
+            overflow: hidden; background-color: var(--bg);
+            color: var(--text); font-family: 'Inter', sans-serif;
+            position: relative;
+        }
+        body { display: flex; flex-direction: column; }
         
-        body, html { 
-            margin: 0; padding: 0; height: 100%; width: 100%; 
-            font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
-            overflow: hidden;
+        /* --- HEADER --- */
+        header { 
+            display: flex; align-items: center; justify-content: space-between; 
+            padding: 15px 30px; flex-shrink: 0; background: var(--card);
+            border-bottom: 1px solid var(--border);
         }
-
-        /* --- HEADER (ESKİ STİL) --- */
-        header {
-            height: 70px; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 25px; background: rgba(24, 24, 27, 0.8);
-            backdrop-filter: blur(10px); border-bottom: 1px solid var(--border);
-            position: sticky; top: 0; z-index: 100;
-        }
-        .logo { font-family: 'Montserrat'; font-weight: 800; font-size: 1.3rem; letter-spacing: -1px; background: linear-gradient(45deg, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        /* --- ANA AKIŞ --- */
-        main { 
-            height: calc(100% - 70px); width: 100%; 
-            display: flex; overflow-x: auto; overflow-y: hidden;
-            padding: 25px; gap: 20px; scroll-behavior: smooth;
-        }
-
-        /* --- KART TASARIMI (ESKİ ŞIKLIK) --- */
-        .card {
-            min-width: 320px; max-width: 320px; background: var(--card-bg);
-            border-radius: 20px; border: 1px solid var(--border);
-            display: flex; flex-direction: column; max-height: 100%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .card-header {
-            padding: 20px; border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .card-title { font-family: 'Montserrat'; font-weight: 700; color: var(--accent); font-size: 1rem; }
-
-        .task-list { 
-            padding: 15px 20px; overflow-y: auto; flex-grow: 1; 
-        }
+        .logo-area { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        h1 { font-family: 'Montserrat'; font-size: 1.2rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
         
-        .task-item {
-            display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
-            background: #27272a66; padding: 12px; border-radius: 12px;
-            transition: 0.2s; border: 1px solid transparent;
-        }
-        .task-item:hover { border-color: var(--accent); }
-        .task-item.done { opacity: 0.4; filter: grayscale(1); }
-        .task-item input[type="checkbox"] {
-            width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer;
+        .menu-trigger {
+            background: none; border: none; color: var(--text);
+            font-size: 1.5rem; cursor: pointer; padding: 5px;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        .input-area { padding: 20px; border-top: 1px solid var(--border); }
-        .input-box {
-            width: 100%; padding: 12px 15px; border-radius: 12px;
-            border: 1px solid var(--border); background: var(--bg);
-            color: var(--text); outline: none; transition: 0.2s;
+        /* --- SOL MENÜ (SIDEBAR) --- */
+        #sidebar {
+            position: fixed; top: 0; left: calc(-1 * var(--sidebar-w)); 
+            width: var(--sidebar-w); height: 100%;
+            background: var(--card); border-right: 1px solid var(--border);
+            z-index: 3000; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 30px 20px; box-shadow: 10px 0 30px rgba(0,0,0,0.1);
         }
-        .input-box:focus { border-color: var(--accent); }
+        #sidebar.open { transform: translateX(var(--sidebar-w)); }
 
-        .add-day-btn {
-            min-width: 320px; height: 150px; border: 2px dashed var(--border);
-            border-radius: 20px; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; cursor: pointer;
-            transition: 0.3s; color: var(--text-dim); gap: 10px;
+        .sidebar-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            opacity: 0; visibility: hidden; transition: 0.3s; z-index: 2500;
+            backdrop-filter: blur(2px);
         }
-        .add-day-btn:hover { border-color: var(--accent); color: var(--accent); background: #8b5cf60a; }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { height: 8px; width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+        .nav-link {
+            padding: 14px 18px; border-radius: 10px; margin-bottom: 8px;
+            cursor: pointer; display: flex; align-items: center; gap: 12px;
+            font-weight: 500; transition: 0.2s; color: var(--text);
+        }
+        .nav-link:hover { background: var(--bg); color: var(--accent); }
+        .nav-link.active { background: var(--accent); color: white; }
 
-        /* Mobil */
-        @media (max-width: 600px) {
-            main { padding: 15px; gap: 15px; }
-            .card { min-width: 85vw; }
+        /* --- BOARD YAPISI --- */
+        .board-wrapper { 
+            flex-grow: 1; overflow-x: auto; overflow-y: hidden; 
+            display: flex; align-items: center; padding: 0 40px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .board { 
+            display: grid; grid-template-rows: repeat(2, 290px); 
+            grid-auto-flow: column; gap: 20px; height: 85%; align-items: start;
+        }
+
+        .card, .silhouette { width: 280px; height: 300px; border-radius: 12px; flex-shrink: 0; position: relative; }
+        .card { background: var(--card); padding: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: var(--shadow); }
+        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
+        .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; }
+        .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; word-break: break-word; }
+        .priority-high { color: var(--danger); font-weight: 600; }
+        .priority-medium { color: var(--warning); font-weight: 500; }
+        .done { text-decoration: line-through; opacity: 0.4 !important; color: #8b949e !important; }
+        .input-box { background: var(--input); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; width: 100%; outline: none; font-size: 0.85rem; }
+        .silhouette { border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--border); font-size: 1.1rem; }
+
+        @media (max-width: 800px) {
+            header { padding: 15px 20px; }
+            .board { display: flex; flex-direction: row; height: auto; }
+            .card, .silhouette { width: 85vw; height: 320px; margin-right: 15px; }
+            .board-wrapper { padding: 0 20px; }
         }
     </style>
 </head>
-<body>
+<body data-theme="dark">
+
+    <div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
+    <nav id="sidebar">
+        <div style="font-family:'Montserrat'; font-size:1.4rem; margin-bottom:40px; color:var(--accent)">ODAK</div>
+        <div class="nav-link active" onclick="toggleMenu()">📅 Görevlerim</div>
+        <div class="nav-link" onclick="alert('Yakında!'); toggleMenu()">📝 Not Defteri</div>
+        <div class="nav-link" onclick="temaDegistir(); toggleMenu()">🌓 Temayı Değiştir</div>
+        <div style="position: absolute; bottom: 20px; font-size: 0.7rem; opacity: 0.4;">v2.9.2 Stable</div>
+    </nav>
 
     <header>
-        <div class="logo">ODAK DEFTERİ</div>
-        <div style="font-size: 0.8rem; color: var(--text-dim); font-weight: 600;">v2.9.0 Klasik</div>
+        <div class="logo-area">
+            <button class="menu-trigger" onclick="toggleMenu()">☰</button>
+            <h1>Odak Defteri</h1>
+        </div>
+        <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn" style="background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:8px 12px; cursor:pointer;">🌙</button>
     </header>
 
-    <main id="board">
-        </main>
+    <div class="board-wrapper" id="scroll-area">
+        <div class="board" id="board"></div>
+    </div>
 
     <script>
-        const KEY = 'odak_retro_storage';
-        let gunler = JSON.parse(localStorage.getItem(KEY)) || [];
+        let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
+        const scrollArea = document.getElementById('scroll-area');
 
-        function kaydet() {
-            localStorage.setItem(KEY, JSON.stringify(gunler));
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
         }
+
+        // Mouse Wheel Scroll (v2.8.1 özelliği)
+        scrollArea.addEventListener('wheel', (e) => {
+            if (e.deltaY !== 0) {
+                e.preventDefault();
+                scrollArea.scrollLeft += (e.deltaY * 0.8);
+            }
+        }, { passive: false });
+
+        function temaSet(tema) {
+            document.body.setAttribute('data-theme', tema);
+            localStorage.setItem('tema', tema);
+            document.getElementById('theme-btn').innerText = tema === 'dark' ? '🌙' : '☀️';
+        }
+
+        function temaDegistir() {
+            temaSet(document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        }
+
+        temaSet(localStorage.getItem('tema') || 'dark');
 
         function ciz() {
             const board = document.getElementById('board');
             board.innerHTML = '';
-
+            
             gunler.forEach((gun, gIdx) => {
+                const bitti = gun.gorevler.filter(t => t.ok).length;
+                const oran = gun.gorevler.length === 0 ? 0 : Math.round((bitti / gun.gorevler.length) * 100);
+                
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
-                    <div class="card-header">
-                        <span class="card-title">${gun.tarih}</span>
-                        <button onclick="kartSil(${gIdx})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold;">×</button>
+                    <button class="delete-btn" onclick="kartSil(${gIdx})">&times;</button>
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
+                        <span style="font-family:'Montserrat'; font-size:0.9rem; font-weight:600;">${gun.tarih}</span>
+                        <span style="font-size:11px; color:var(--accent); font-weight:bold;">%${oran}</span>
                     </div>
                     <div class="task-list">
-                        ${gun.gorevler.map((t, tIdx) => `
-                            <div class="task-item ${t.ok ? 'done' : ''}">
-                                <input type="checkbox" ${t.ok ? 'checked' : ''} onchange="tamam(${gIdx},${tIdx})">
-                                <span>${t.txt}</span>
-                            </div>
-                        `).join('')}
+                        ${gun.gorevler.map((t, tIdx) => {
+                            let pClass = "";
+                            let cleanText = t.txt;
+                            if(t.txt.startsWith('!')) { pClass = "priority-high"; cleanText = t.txt.substring(1); }
+                            else if(t.txt.startsWith('?')) { pClass = "priority-medium"; cleanText = t.txt.substring(1); }
+                            return `
+                                <div class="task-item ${t.ok ? 'done' : pClass}">
+                                    <input type="checkbox" ${t.ok ? 'checked' : ''} onchange="tamam(${gIdx},${tIdx})">
+                                    <span>${cleanText}</span>
+                                </div>`;
+                        }).join('')}
                     </div>
-                    <div class="input-area">
-                        <input type="text" class="input-box" placeholder="+ Görev ekle..." onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
-                    </div>
+                    <input type="text" class="input-box" placeholder="Görev oluştur..." maxlength="50" onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
                 `;
                 board.appendChild(card);
             });
 
-            const addBtn = document.createElement('div');
-            addBtn.className = 'add-day-btn';
-            addBtn.innerHTML = `<span style="font-size:2rem;">+</span><span>Yeni Gün Ekle</span>`;
-            addBtn.onclick = yeniGun;
-            board.appendChild(addBtn);
+            const siluet = document.createElement('div');
+            siluet.className = 'silhouette';
+            siluet.onclick = yeniGun;
+            siluet.innerHTML = `<span>+ Yeni Gün</span>`;
+            board.appendChild(siluet);
+            
+            localStorage.setItem('ajanda_v8', JSON.stringify(gunler));
         }
 
         function yeniGun() {
             const t = new Date(); t.setDate(t.getDate() + gunler.length);
-            const tarihYazi = t.toLocaleDateString('tr-TR', { day:'numeric', month:'long', weekday:'short' });
-            gunler.push({ tarih: tarihYazi, gorevler: [] });
-            kaydet();
+            const yazi = t.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', weekday: 'short' });
+            gunler.push({ tarih: yazi, gorevler: [] });
             ciz();
-            // En sağa kaydır
-            const m = document.querySelector('main');
-            m.scrollLeft = m.scrollWidth;
         }
 
-        function ekle(e, gIdx) {
-            if(!e.target.value.trim()) return;
-            gunler[gIdx].gorevler.push({ txt: e.target.value, ok: false });
-            e.target.value = '';
-            kaydet();
+        function kartSil(idx) {
+            if(confirm('Silinsin mi?')) { gunler.splice(idx, 1); ciz(); }
+        }
+
+        function ekle(e, idx) {
+            const yazi = e.target.value.trim();
+            if(!yazi) return;
+            gunler[idx].gorevler.push({ txt: yazi, ok: false });
+            e.target.value = "";
             ciz();
         }
 
         function tamam(gIdx, tIdx) {
             gunler[gIdx].gorevler[tIdx].ok = !gunler[gIdx].gorevler[tIdx].ok;
-            kaydet();
             ciz();
         }
 
-        function kartSil(idx) {
-            if(confirm('Bu günü silmek istediğine emin misin?')) {
-                gunler.splice(idx, 1);
-                kaydet();
-                ciz();
-            }
-        }
-
-        // İlk açılış
         ciz();
     </script>
 </body>
