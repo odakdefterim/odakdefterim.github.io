@@ -123,12 +123,40 @@
             border-color: var(--accent);
         }
 
-        /* Progress Bar */
-        .progress-container {
-            width: 100%; height: 4px; background: var(--bg); border-radius: 2px; margin: 5px 0 10px 0; overflow: hidden;
+        /* PROGRESS TASARIMI - YENİ DÜZENLEME */
+        .progress-wrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            position: relative;
         }
+
+        .progress-container {
+            flex-grow: 1; 
+            height: 6px; 
+            background: var(--bg); 
+            border-radius: 3px; 
+            overflow: hidden;
+            position: relative;
+        }
+        
         .progress-bar {
             height: 100%; background: var(--accent); transition: width 0.4s ease; width: 0%;
+        }
+
+        /* Yüzde ifadesi barın üzerine hafifçe biniyor */
+        .percentage-label {
+            color: var(--accent); 
+            font-weight: 800; 
+            font-size: 10px;
+            margin-left: -18px; /* Barın üzerine binmesini sağlar */
+            z-index: 5;
+            background: var(--card); /* Okunabilirlik için */
+            padding: 1px 3px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            pointer-events: none;
         }
 
         .task-list { 
@@ -185,7 +213,9 @@
             header { padding: 15px 20px; }
         }
 
-        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; line-height: 1; z-index: 10; }
+        /* X butonu çakışmaması için biraz daha yukarıda */
+        .delete-btn { position: absolute; top: 8px; right: 8px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; line-height: 1; z-index: 10; }
+        
         .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; word-break: break-word; gap: 8px; cursor: grab; }
         .task-item:active { cursor: grabbing; }
         .priority-high { color: var(--danger); font-weight: 600; }
@@ -199,7 +229,7 @@
             font-size: 0.85rem; box-sizing: border-box; transition: 0.2s;
         }
         .input-box:focus { border-color: var(--accent); }
-        .info-note { font-size: 9px; opacity: 0.6; margin-bottom: 5px; font-style: italic; display: flex; justify-content: space-between; align-items: center; }
+        .info-note { font-size: 9px; opacity: 0.6; margin-bottom: 3px; font-style: italic; }
         footer { padding: 10px; text-align: center; font-size: 0.7rem; opacity: 0.5; border-top: 1px solid var(--border); flex-shrink: 0; }
     </style>
 </head>
@@ -246,37 +276,6 @@
         const scrollArea = document.getElementById('scroll-area');
         const ptrIndicator = document.getElementById('ptr-indicator');
 
-        // --- PULL TO REFRESH LOGIC ---
-        let startY = 0;
-        let pullDistance = 0;
-        const pullThreshold = 80;
-
-        window.addEventListener('touchstart', (e) => {
-            if (window.scrollY === 0) startY = e.touches[0].pageY;
-        }, { passive: true });
-
-        window.addEventListener('touchmove', (e) => {
-            const currentY = e.touches[0].pageY;
-            pullDistance = currentY - startY;
-            if (pullDistance > 0 && window.scrollY === 0) {
-                const move = Math.min(pullDistance * 0.4, pullThreshold + 20);
-                document.body.style.transform = `translateY(${move}px)`;
-                ptrIndicator.style.transform = `translateY(${move}px)`;
-                ptrIndicator.innerText = move > pullThreshold ? "🔄 Bırak ve Yenile" : "⬇️ Yenilemek için çek";
-            }
-        }, { passive: true });
-
-        window.addEventListener('touchend', () => {
-            if (pullDistance * 0.4 > pullThreshold) {
-                ptrIndicator.innerText = "⌛ Yenileniyor...";
-                setTimeout(() => location.reload(), 500);
-            } else {
-                document.body.style.transform = `translateY(0)`;
-                ptrIndicator.style.transform = `translateY(0)`;
-            }
-            startY = 0; pullDistance = 0;
-        });
-
         // --- CORE FUNCTIONS ---
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('open');
@@ -293,13 +292,6 @@
             document.getElementById('notes-panel').classList.remove('open');
             document.getElementById('overlay').classList.remove('active');
         }
-
-        scrollArea.addEventListener('wheel', (e) => {
-            if (e.deltaY !== 0 && window.innerWidth > 800) {
-                e.preventDefault();
-                scrollArea.scrollLeft += (e.deltaY * 1.5);
-            }
-        }, { passive: false });
 
         function temaSet(tema) {
             document.body.setAttribute('data-theme', tema);
@@ -324,8 +316,8 @@
                 card.className = 'card';
                 card.innerHTML = `
                     <button class="delete-btn" onclick="kartSil(${gIdx})">&times;</button>
-                    <div style="margin-bottom:10px;">
-                        <span style="font-family:'Montserrat'; font-size:0.9rem; font-weight:600;">${gun.tarih}</span>
+                    <div style="margin-bottom:12px;">
+                        <span style="font-family:'Montserrat'; font-size:0.9rem; font-weight:600; color:var(--accent);">${gun.tarih}</span>
                     </div>
                     
                     <div class="task-list" ondragover="event.preventDefault()" ondrop="drop(event, ${gIdx})">
@@ -340,11 +332,14 @@
                         }).join('')}
                     </div>
 
-                    <div class="info-note">
-                        <span>! Acil, ? Bekle</span>
-                        <span style="color:var(--accent); font-weight:bold;">%${oran}</span>
+                    <div class="info-note">! Acil, ? Bekle</div>
+                    
+                    <div class="progress-wrapper">
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: ${oran}%"></div>
+                        </div>
+                        <div class="percentage-label">%${oran}</div>
                     </div>
-                    <div class="progress-container"><div class="progress-bar" style="width: ${oran}%"></div></div>
                     
                     <input type="text" class="input-box" placeholder="Görev oluştur..." maxlength="50" 
                            onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
@@ -361,11 +356,8 @@
             localStorage.setItem('ajanda_v8', JSON.stringify(gunler));
         }
 
-        // --- DRAG & DROP LOGIC ---
-        function drag(ev, gIdx, tIdx) {
-            ev.dataTransfer.setData("text", JSON.stringify({gIdx, tIdx}));
-        }
-
+        // --- DRAG & DROP & OTHER LOGIC ---
+        function drag(ev, gIdx, tIdx) { ev.dataTransfer.setData("text", JSON.stringify({gIdx, tIdx})); }
         function drop(ev, toGIdx) {
             ev.preventDefault();
             const data = JSON.parse(ev.dataTransfer.getData("text"));
@@ -373,38 +365,22 @@
             gunler[toGIdx].gorevler.push(task);
             ciz();
         }
-
         function yeniGun() {
             const bugun = new Date();
             bugun.setDate(bugun.getDate() + gunler.length);
             const yazi = bugun.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', weekday: 'short' });
             gunler.push({ tarih: yazi, gorevler: [] });
             ciz();
-            setTimeout(() => { 
-                scrollArea.scrollTo({ left: scrollArea.scrollWidth, behavior: 'smooth' }); 
-            }, 50);
         }
-
-        function kartSil(idx) { 
-            // Onay isteme kaldırıldı
-            gunler.splice(idx, 1); 
-            ciz(); 
-        }
-
+        function kartSil(idx) { gunler.splice(idx, 1); ciz(); }
         function ekle(e, idx) {
             const yazi = e.target.value.trim();
             if(!yazi) return;
-            if(gunler[idx].gorevler.length >= 50) return alert("Maksimum görev sınırı!");
             gunler[idx].gorevler.push({ txt: yazi, ok: false });
             e.target.value = "";
             ciz();
         }
-
-        function tamam(gIdx, tIdx) { 
-            gunler[gIdx].gorevler[tIdx].ok = !gunler[gIdx].gorevler[tIdx].ok; 
-            ciz(); 
-        }
-
+        function tamam(gIdx, tIdx) { gunler[gIdx].gorevler[tIdx].ok = !gunler[gIdx].gorevler[tIdx].ok; ciz(); }
         function saveNote() {
             const inp = document.getElementById('note-input');
             if(!inp.value.trim()) return;
@@ -413,7 +389,6 @@
             drawNotes();
             localStorage.setItem('odak_notlar_v9', JSON.stringify(notlar));
         }
-
         function drawNotes() {
             const list = document.getElementById('notes-list');
             list.innerHTML = notlar.map((n, idx) => `
@@ -423,13 +398,7 @@
                 </div>
             `).join('');
         }
-
-        function deleteNote(idx) { 
-            // Onay isteme kaldırıldı
-            notlar.splice(idx, 1); 
-            localStorage.setItem('odak_notlar_v9', JSON.stringify(notlar)); 
-            drawNotes(); 
-        }
+        function deleteNote(idx) { notlar.splice(idx, 1); localStorage.setItem('odak_notlar_v9', JSON.stringify(notlar)); drawNotes(); }
 
         ciz();
     </script>
