@@ -25,11 +25,14 @@
         }
         body { display: flex; flex-direction: column; position: relative; }
         
-        /* Yenileme Göstergesi Stili */
+        /* BELİRGİN REFRESH İKONU */
         #ptr-element {
-            position: absolute; top: -40px; left: 0; width: 100%; height: 40px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; transition: transform 0.1s; z-index: 10;
+            position: fixed; top: -60px; left: 50%; transform: translateX(-50%);
+            width: 50px; height: 50px; background: var(--accent); color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 26px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 1000;
+            transition: transform 0.1s ease-out, opacity 0.2s; opacity: 0;
+            pointer-events: none; /* Tıklamayı engelle, sadece görsel */
         }
 
         header { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; flex-shrink: 0; }
@@ -101,7 +104,7 @@
     <script>
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
         
-        // --- Refresh Mekaniği (Minimal ve Etkili) ---
+        // --- YENİLENMİŞ REFRESH MEKANİĞİ ---
         let touchStart = 0;
         const ptr = document.getElementById('ptr-element');
 
@@ -113,18 +116,27 @@
             const touchCurrent = e.touches[0].pageY;
             const diff = touchCurrent - touchStart;
             
-            if (diff > 0 && diff < 100) {
-                ptr.style.transform = `translateY(${diff}px) rotate(${diff * 2}deg)`;
+            if (diff > 10 && diff < 180) {
+                ptr.style.opacity = "1";
+                // Yumuşak bir yaylanma efekti için diff/2
+                const move = Math.min(diff / 1.5, 100); 
+                ptr.style.transform = `translateX(-50%) translateY(${move}px) rotate(${diff * 4}deg)`;
             }
         }, {passive: true});
 
         window.addEventListener('touchend', e => {
             const diff = e.changedTouches[0].pageY - touchStart;
-            if (diff > 70) {
-                location.reload();
+            if (diff > 100) {
+                // Başarılı çekme durumunda zıplama efekti ve reload
+                ptr.style.transform = `translateX(-50%) translateY(80px) scale(1.2)`;
+                ptr.innerHTML = "⌛"; 
+                setTimeout(() => location.reload(), 400);
             } else {
-                ptr.style.transform = `translateY(0)`;
+                // İptal durumunda yukarı gizle
+                ptr.style.opacity = "0";
+                ptr.style.transform = `translateX(-50%) translateY(0)`;
             }
+            touchStart = 0;
         }, {passive: true});
         // -------------------------------------------
 
@@ -210,4 +222,4 @@
         ciz();
     </script>
 </body>
-</html>s
+</html>
