@@ -8,11 +8,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f0f2f5; --card: #ffffff; --accent: #0969da; --text: #1f2328; --border: #d0d7de; --danger: #cf222e; --warning: #9a6700; --input: #ffffff;
+            --bg: #f0f2f5; 
+            --card: #ffffff; 
+            --accent: #0969da; 
+            --text: #1f2328; 
+            --border: #d0d7de; 
+            --danger: #cf222e; 
+            --warning: #9a6700; 
+            --input: #ffffff;
             --shadow: 0 6px 16px rgba(0,0,0,0.08);
         }
         [data-theme="dark"] {
-            --bg: #0d1117; --card: #161b22; --accent: #58a6ff; --text: #c9d1d9; --border: #30363d; --danger: #f85149; --warning: #d29922; --input: #010409;
+            --bg: #0d1117; 
+            --card: #161b22; 
+            --accent: #58a6ff; 
+            --text: #c9d1d9; 
+            --border: #30363d; 
+            --danger: #f85149; 
+            --warning: #d29922; 
+            --input: #010409;
             --shadow: none;
         }
 
@@ -24,65 +38,100 @@
         }
         body { display: flex; flex-direction: column; }
         
-        header { display: flex; align-items: center; justify-content: space-between; padding: 15px 25px; flex-shrink: 0; }
-        .logo-area { display: flex; align-items: center; gap: 10px; }
-        header img { width: 30px; height: 30px; border-radius: 6px; }
-        h1 { font-family: 'Montserrat'; font-size: 1.3rem; margin: 0; color: var(--text); }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; flex-shrink: 0; }
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        header img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
+        h1 { font-family: 'Montserrat'; font-size: 1.6rem; margin: 0; color: var(--text); }
 
         .theme-toggle {
             background: var(--card); border: 1px solid var(--border); color: var(--text);
-            padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.75rem;
-            display: flex; align-items: center; gap: 6px; box-shadow: var(--shadow);
+            padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.8rem;
+            display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: var(--shadow);
+            font-weight: 500;
         }
 
-        .board-wrapper { flex-grow: 1; overflow-x: auto; overflow-y: hidden; display: flex; align-items: center; padding: 0 20px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
-        
+        .board-wrapper { 
+            flex-grow: 1; 
+            overflow-x: auto; 
+            overflow-y: hidden; 
+            display: flex; 
+            align-items: center; 
+            padding: 0 40px; 
+            scroll-behavior: smooth; 
+            -webkit-overflow-scrolling: touch; /* Mobil kaydırma akıcılığı */
+        }
+
         /* MASAÜSTÜ: 2 SATIR */
-        .board { display: grid; grid-template-rows: repeat(2, 1fr); grid-auto-flow: column; gap: 20px; height: 85%; align-items: start; }
+        .board { 
+            display: grid; 
+            grid-template-rows: repeat(2, 1fr); 
+            grid-auto-flow: column; 
+            gap: 20px; 
+            height: 82%; 
+            align-items: start; 
+        }
         
-        /* MOBİL DÜZENLEME: TEK SATIR */
+        /* MOBİL DÜZENLEME: 2. SATIR SORUNUNU ÇÖZER */
         @media (max-width: 900px) {
-            .board { grid-template-rows: 1fr; height: auto; align-items: center; padding: 20px 0; }
-            .card, .silhouette { height: 320px !important; width: 260px !important; }
-            header { padding: 10px 20px; }
-            h1 { font-size: 1.1rem; }
+            .board { 
+                grid-template-rows: 1fr; /* Mobilde tek satıra düşürür */
+                height: auto;
+                padding: 20px 0;
+            }
+            .card, .silhouette { 
+                height: 320px !important; 
+                width: 260px !important; 
+            }
+            header { padding: 15px 20px; }
+            h1 { font-size: 1.2rem; }
         }
 
-        .card, .silhouette { width: 280px; height: 300px; border-radius: 12px; box-sizing: border-box; flex-shrink: 0; }
+        .card, .silhouette { 
+            width: 280px; 
+            height: 300px; 
+            border-radius: 12px; 
+            box-sizing: border-box;
+            flex-shrink: 0; /* Kartların daralmasını engeller */
+        }
 
         .card { 
-            background: var(--card); padding: 18px; border: 1px solid var(--border); 
-            display: flex; flex-direction: column; position: relative; box-shadow: var(--shadow);
+            background: var(--card); 
+            padding: 20px; border: 1px solid var(--border); display: flex; 
+            flex-direction: column; position: relative; box-shadow: var(--shadow);
+            transition: background 0.3s, border 0.3s;
         }
         
-        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
+        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; transition: 0.2s; }
+        .delete-btn:hover { color: var(--danger); transform: scale(1.2); }
         
-        .task-list { overflow-y: auto; flex-grow: 1; margin: 12px 0; }
+        .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; padding-right: 5px; }
         .task-list::-webkit-scrollbar { width: 4px; }
         .task-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
         
-        .task-item { display: flex; align-items: center; margin: 6px 0; font-size: 0.85rem; }
+        .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; }
         .priority-high { color: var(--danger); font-weight: 600; }
         .priority-medium { color: var(--warning); font-weight: 500; }
         .priority-low { color: var(--accent); }
-        .done { text-decoration: line-through; opacity: 0.4; color: #8b949e !important; }
+        .done { text-decoration: line-through; opacity: 0.4 !important; color: #8b949e !important; }
         
-        input[type="checkbox"] { accent-color: var(--accent); margin-right: 8px; cursor: pointer; }
+        input[type="checkbox"] { accent-color: var(--accent); margin-right: 10px; cursor: pointer; }
         .input-box { background: var(--input); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; width: 100%; box-sizing: border-box; outline: none; font-size: 0.85rem; }
         
         .silhouette { 
-            border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; color: var(--border); transition: 0.3s;
+            border: 2px dashed var(--border); 
+            display: flex; align-items: center; justify-content: center; cursor: pointer; 
+            color: var(--border); transition: 0.3s; background: transparent;
         }
+        .silhouette:hover { border-color: var(--accent); color: var(--accent); background: rgba(88, 166, 255, 0.05); }
         
-        footer { padding: 10px; border-top: 1px solid var(--border); text-align: center; font-size: 0.7rem; color: #8b949e; flex-shrink: 0; }
+        footer { padding: 15px 40px; border-top: 1px solid var(--border); text-align: center; font-size: 0.8rem; color: #8b949e; }
     </style>
 </head>
 <body data-theme="dark">
     <header>
         <div class="logo-area">
             <img src="logo.png" alt="Logo">
-            <h1>Odak Defteri v2.8</h1>
+            <h1>Odak Defteri v2.7.2</h1>
         </div>
         <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">🌙 Gece Modu</button>
     </header>
@@ -111,8 +160,8 @@
         temaSet(localStorage.getItem('tema') || 'dark');
 
         const scrollArea = document.getElementById('scroll-area');
-        // Sadece masaüstünde wheel event çalışsın, mobilde doğal kaydırma kalsın
         scrollArea.addEventListener('wheel', (evt) => { 
+            // Masaüstünde yatay kaydırma, mobilde doğal kaydırma
             if (window.innerWidth > 900) {
                 evt.preventDefault(); 
                 scrollArea.scrollLeft += evt.deltaY; 
@@ -131,8 +180,8 @@
                 card.className = 'card';
                 card.innerHTML = `
                     <button class="delete-btn" onclick="kartSil(${gIdx})">&times;</button>
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span style="font-family:'Montserrat'; font-size:0.8rem; font-weight:600;">${gun.tarih}</span>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-family:'Montserrat'; font-size:0.85rem; font-weight:600;">${gun.tarih}</span>
                         <span style="font-size:10px; color:var(--accent); font-weight:bold;">%${oran}</span>
                     </div>
                     <div class="task-list">
@@ -144,7 +193,7 @@
                             return `<div class="task-item ${t.ok ? 'done' : pClass}"><input type="checkbox" ${t.ok ? 'checked' : ''} onchange="tamam(${gIdx},${tIdx})"><span>${cleanText}</span></div>`;
                         }).join('')}
                     </div>
-                    <input type="text" class="input-box" placeholder="Görev..." onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
+                    <input type="text" class="input-box" placeholder="Görev oluştur..." onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
                 `;
                 board.appendChild(card);
             });
