@@ -28,10 +28,10 @@
         }
         body { display: flex; flex-direction: column; }
         
-        /* --- YUVARLAK OK REFRESH UI --- */
+        /* --- YUVARLAK SIMETRIK REFRESH UI --- */
         #ptr-indicator {
             position: fixed;
-            top: -60px; /* Ekranın dışında başla */
+            top: -65px; 
             left: 50%;
             transform: translateX(-50%);
             width: 45px;
@@ -48,11 +48,13 @@
         }
 
         #ptr-icon {
-            font-size: 24px;
-            color: var(--accent);
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
             display: inline-block;
-            line-height: 1;
-            font-weight: bold;
+            box-sizing: border-box;
             transition: transform 0.1s linear;
         }
 
@@ -61,7 +63,7 @@
             to { transform: rotate(360deg); }
         }
         .refreshing #ptr-icon {
-            animation: spin 0.8s linear infinite;
+            animation: spin 0.8s linear infinite !important;
         }
 
         /* --- SIDEBAR & PANELS --- */
@@ -209,7 +211,7 @@
 </head>
 <body data-theme="dark">
     <div id="ptr-indicator">
-        <span id="ptr-icon">↻</span>
+        <span id="ptr-icon"></span>
     </div>
 
     <div class="overlay" id="overlay" onclick="closeAll()"></div>
@@ -251,12 +253,12 @@
         let notlar = JSON.parse(localStorage.getItem('odak_notlar_v9')) || [];
         const scrollArea = document.getElementById('scroll-area');
         
-        // --- PULL TO REFRESH LOGIC ---
+        // --- PULL TO REFRESH LOGIC (GÜNCELLENDİ) ---
         const ptr = document.getElementById('ptr-indicator');
         const ptrIcon = document.getElementById('ptr-icon');
         let startY = 0;
         let pullDistance = 0;
-        const pullThreshold = 100;
+        const pullThreshold = 85; // Daha hassas ve makul bir eşik
 
         window.addEventListener('touchstart', (e) => {
             if (window.scrollY === 0) {
@@ -269,33 +271,33 @@
             pullDistance = currentY - startY;
 
             if (pullDistance > 0 && window.scrollY === 0) {
-                const move = Math.min(pullDistance * 0.4, 130);
-                ptr.style.top = (move - 60) + 'px'; // Yukarıdan aşağı indir
+                // Direnç katsayısını 0.35'e düşürdük (daha ağır/kontrollü iniş)
+                const move = Math.min(pullDistance * 0.35, 110);
+                ptr.style.top = (move - 65) + 'px'; 
                 
-                // Oku kendi ekseninde döndür
-                const rotation = move * 4;
+                // Simetrik halkayı çekme miktarına göre döndür
+                const rotation = move * 5;
                 ptrIcon.style.transform = `rotate(${rotation}deg)`;
                 
-                // Eşik geçilince rengi vurgula
+                // Eşik geçilince renk geri bildirimi
                 if (move > pullThreshold) {
-                    ptrIcon.style.color = 'var(--danger)';
+                    ptrIcon.style.borderTopColor = 'var(--danger)';
                 } else {
-                    ptrIcon.style.color = 'var(--accent)';
+                    ptrIcon.style.borderTopColor = 'var(--accent)';
                 }
             }
         }, { passive: true });
 
         window.addEventListener('touchend', () => {
-            if (pullDistance * 0.4 > pullThreshold) {
-                // Yenileme işlemi tetiklendi
+            const finalMove = Math.min(pullDistance * 0.35, 110);
+            if (finalMove > pullThreshold) {
                 ptr.classList.add('refreshing');
-                ptr.style.top = '25px';
+                ptr.style.top = '20px';
                 setTimeout(() => {
                     location.reload();
                 }, 800);
             } else {
-                // İptal: Göstergeyi geri sakla
-                ptr.style.top = '-60px';
+                ptr.style.top = '-65px';
                 ptrIcon.style.transform = 'rotate(0deg)';
             }
             startY = 0;
