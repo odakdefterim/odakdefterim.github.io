@@ -2,18 +2,21 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Odak Defteri v2.8.5</title>
     <style>
         :root {
             --bg: #f8fafc; --text: #1e293b; --border: #e2e8f0;
             --accent: #2563eb; --card: #ffffff; --shadow: 0 4px 12px rgba(0,0,0,0.05);
-            --note-bg: #fefce8; /* Not kağıdı sarısı */
+            --note-bg: #fefce8;
         }
         [data-theme="dark"] {
             --bg: #0f172a; --text: #f1f5f9; --border: #1e293b;
             --accent: #38bdf8; --card: #1e293b; --shadow: none;
-            --note-bg: #334155;
+            --note-bg: #1e293b;
         }
 
         body {
@@ -21,14 +24,14 @@
             background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden;
         }
 
-        /* YENİ: Sabit Not Paneli */
+        /* Not Paneli */
         #note-sidebar {
             width: 300px; background: var(--card); border-right: 1px solid var(--border);
-            display: flex; flex-direction: column; padding: 20px; transition: 0.3s;
+            display: flex; flex-direction: column; padding: 20px; transition: transform 0.3s ease;
             position: relative; z-index: 100;
         }
 
-        #note-sidebar.collapsed { margin-left: -260px; }
+        #note-sidebar.collapsed { transform: translateX(-270px); }
 
         .note-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         
@@ -36,16 +39,17 @@
             flex-grow: 1; background: var(--note-bg); border: 1px solid var(--border);
             border-radius: 8px; padding: 15px; color: var(--text); font-family: inherit;
             resize: none; outline: none; line-height: 1.6; font-size: 0.95rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .toggle-sidebar {
             position: absolute; right: -15px; top: 20px; background: var(--accent);
             color: white; border: none; border-radius: 50%; width: 30px; height: 30px;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* Ana İçerik */
-        main { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+        main { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; width: 100%; }
 
         header {
             padding: 15px 30px; border-bottom: 1px solid var(--border);
@@ -58,42 +62,47 @@
         }
 
         .card {
-            min-width: 260px; background: var(--card); border: 1px solid var(--border);
+            min-width: 280px; background: var(--card); border: 1px solid var(--border);
             border-radius: 12px; padding: 15px; box-shadow: var(--shadow); position: relative;
         }
 
-        .card h3 { margin: 0 0 10px 0; font-size: 1rem; opacity: 0.8; }
+        .card h3 { margin: 0 0 10px 0; font-size: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 
         .task-item { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: 0.9rem; }
         .done { opacity: 0.4; text-decoration: line-through; }
 
         .input-box {
             width: 100%; border: 1px solid var(--border); background: var(--bg);
-            color: var(--text); padding: 8px; border-radius: 6px; box-sizing: border-box;
+            color: var(--text); padding: 10px; border-radius: 6px; box-sizing: border-box;
             margin-top: 15px; outline: none;
         }
 
         .btn-add {
-            min-width: 220px; padding: 40px; border: 2px dashed var(--border);
-            border-radius: 12px; text-align: center; cursor: pointer; opacity: 0.5;
+            min-width: 240px; padding: 40px; border: 2px dashed var(--border);
+            border-radius: 12px; text-align: center; cursor: pointer; opacity: 0.5; font-weight: bold;
         }
 
-        .btn-del { position: absolute; top: 10px; right: 10px; border: none; background: none; color: #ef4444; cursor: pointer; }
+        .btn-del { position: absolute; top: 12px; right: 10px; border: none; background: none; color: #ef4444; cursor: pointer; font-size: 1.1rem; }
+        
+        .version-tag { font-size: 0.7rem; opacity: 0.5; margin-left: 10px; }
     </style>
 </head>
 <body data-theme="dark">
 
 <aside id="note-sidebar">
-    <button class="toggle-sidebar" onclick="document.getElementById('note-sidebar').classList.toggle('collapsed')">⟨</button>
+    <button class="toggle-sidebar" onclick="document.getElementById('note-sidebar').classList.toggle('collapsed')">⇄</button>
     <div class="note-header">
         <strong style="letter-spacing: 1px;">GENEL NOTLAR</strong>
     </div>
-    <textarea id="main-note" placeholder="Buraya aldığın notlar tüm günlerden bağımsızdır ve otomatik kaydedilir..." oninput="saveNotes()"></textarea>
+    <textarea id="main-note" placeholder="Önemli notlarını buraya yaz..." oninput="saveNotes()"></textarea>
 </aside>
 
 <main>
     <header>
-        <div style="font-weight: 800; font-size: 1.2rem;">ODAK <span style="color:var(--accent)">DEFTERİ</span></div>
+        <div>
+            <span style="font-weight: 800; font-size: 1.2rem;">ODAK <span style="color:var(--accent)">DEFTERİ</span></span>
+            <span class="version-tag">v2.8.5 (Stabil)</span>
+        </div>
         <button onclick="toggleTheme()" style="background:none; border:none; color:var(--text); cursor:pointer; font-size:1.2rem;">◑</button>
     </header>
 
@@ -101,29 +110,39 @@
 </main>
 
 <script>
-    // Yeni veri anahtarları (Önbelleği kırmak için)
-    let days = JSON.parse(localStorage.getItem('odak_days_v285')) || [];
-    let generalNotes = localStorage.getItem('odak_notes_v285') || "";
+    /* ANTI-CACHE PROTOKOLÜ */
+    console.log("Sistem Kontrolü: v2.8.5 Aktif");
+    
+    // 1. Service Worker'ları temizle
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+    }
+
+    // 2. Yeni Veri Yapısı (Eskilerle çakışmaması için anahtarı değiştirdik)
+    const STORAGE_KEY = 'odak_v285_data';
+    const NOTES_KEY = 'odak_v285_notes';
+
+    let days = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    let generalNotes = localStorage.getItem(NOTES_KEY) || "";
 
     document.getElementById('main-note').value = generalNotes;
 
     function saveNotes() {
-        const val = document.getElementById('main-note').value;
-        localStorage.setItem('odak_notes_v285', val);
+        localStorage.setItem(NOTES_KEY, document.getElementById('main-note').value);
     }
 
     function toggleTheme() {
         const theme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
         document.body.setAttribute('data-theme', theme);
-        localStorage.setItem('odak_theme_v285', theme);
+        localStorage.setItem('odak_v285_theme', theme);
     }
 
-    if(localStorage.getItem('odak_theme_v285')) {
-        document.body.setAttribute('data-theme', localStorage.getItem('odak_theme_v285'));
+    if(localStorage.getItem('odak_v285_theme')) {
+        document.body.setAttribute('data-theme', localStorage.getItem('odak_v285_theme'));
     }
 
     function save() {
-        localStorage.setItem('odak_days_v285', JSON.stringify(days));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(days));
         render();
     }
 
@@ -160,21 +179,22 @@
     function addDay() {
         const now = new Date();
         now.setDate(now.getDate() + days.length);
-        const dateStr = now.toLocaleDateString('tr-TR', { day:'numeric', month:'short' });
+        const dateStr = now.toLocaleDateString('tr-TR', { day:'numeric', month:'short', weekday:'short' });
         days.push({ date: dateStr, tasks: [] });
         save();
     }
 
     function removeDay(idx) {
-        if(confirm('Silinsin mi?')) {
+        if(confirm('Günü silmek istediğine emin misin?')) {
             days.splice(idx, 1);
             save();
         }
     }
 
     function addTask(e, idx) {
-        if(e.target.value.trim()) {
-            days[idx].tasks.push({ text: e.target.value, ok: false });
+        const val = e.target.value.trim();
+        if(val) {
+            days[idx].tasks.push({ text: val, ok: false });
             e.target.value = '';
             save();
         }
