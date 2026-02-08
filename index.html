@@ -34,15 +34,15 @@
             transition: transform 0.1s ease; font-size: 0.9rem;
         }
 
-        /* --- Header ve Logo Alanı (v2.2.1 stili) --- */
+        /* --- Logo Boyutu v2.2.1 Ayarı --- */
         header { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; flex-shrink: 0; }
-        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-area { display: flex; align-items: center; gap: 15px; }
         
         header img { 
-            width: 35px; 
-            height: 35px; 
-            border-radius: 6px; 
-            object-fit: cover;
+            width: 50px; /* Logoyu büyüttük */
+            height: 50px; 
+            border-radius: 10px; 
+            object-fit: contain;
             display: block;
         }
 
@@ -74,6 +74,7 @@
             header { padding: 15px 20px; }
             .board { display: flex; flex-direction: row; align-items: center; height: auto; }
             .card, .silhouette { width: 85vw; height: 350px; margin-right: 15px; }
+            header img { width: 40px; height: 40px; } /* Mobilde hafif küçültme */
         }
         footer { padding: 10px; text-align: center; font-size: 0.75rem; opacity: 0.5; border-top: 1px solid var(--border); }
     </style>
@@ -97,6 +98,7 @@
     <footer>Odak Defterim &copy; 2026</footer>
 
     <script>
+        // ... (Script içeriği aynı kalmıştır) ...
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
         const scrollArea = document.getElementById('scroll-area');
         const ptr = document.getElementById('pull-to-refresh');
@@ -104,10 +106,7 @@
         let touchStart = 0;
         let isPulling = false;
 
-        document.addEventListener('touchstart', (e) => {
-            touchStart = e.touches[0].pageY;
-        }, {passive: true});
-
+        document.addEventListener('touchstart', (e) => { touchStart = e.touches[0].pageY; }, {passive: true});
         document.addEventListener('touchmove', (e) => {
             const touchCurrent = e.touches[0].pageY;
             const diff = touchCurrent - touchStart;
@@ -125,17 +124,12 @@
                 ptr.style.transform = `translateY(0)`;
                 ptr.innerText = "Yükleniyor...";
                 setTimeout(() => location.reload(), 500);
-            } else {
-                ptr.style.transform = `translateY(-100%)`;
-            }
+            } else { ptr.style.transform = `translateY(-100%)`; }
             isPulling = false;
         });
 
         scrollArea.addEventListener('wheel', (e) => {
-            if (e.deltaY !== 0) {
-                e.preventDefault();
-                scrollArea.scrollLeft += (e.deltaY * 0.8);
-            }
+            if (e.deltaY !== 0) { e.preventDefault(); scrollArea.scrollLeft += (e.deltaY * 0.8); }
         }, { passive: false });
 
         function temaSet(tema) {
