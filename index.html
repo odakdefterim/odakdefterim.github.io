@@ -31,15 +31,22 @@
         
         h1 { font-family: 'Montserrat'; font-size: 1.4rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
 
-        .actions { display: flex; gap: 10px; align-items: center; }
+        /* Buton Grubu */
+        .header-btns { display: flex; gap: 10px; align-items: center; }
 
-        .btn-icon {
+        .refresh-btn {
             background: var(--card); border: 1px solid var(--border); color: var(--text);
-            padding: 8px 12px; border-radius: 10px; cursor: pointer; font-size: 0.9rem;
-            box-shadow: var(--shadow); transition: 0.2s;
+            padding: 8px 12px; border-radius: 20px; cursor: pointer; font-size: 1rem;
+            display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow);
+            transition: opacity 0.2s;
         }
-        .btn-icon:hover { opacity: 0.8; }
-        .btn-danger { color: var(--danger); border-color: var(--danger); }
+        .refresh-btn:active { opacity: 0.7; }
+
+        .theme-toggle {
+            background: var(--card); border: 1px solid var(--border); color: var(--text);
+            padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.8rem;
+            display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow);
+        }
 
         .board-wrapper { 
             flex-grow: 1; overflow-x: auto; overflow-y: hidden; 
@@ -75,6 +82,7 @@
         .priority-low { color: var(--accent); }
         .done { text-decoration: line-through; opacity: 0.4 !important; color: #8b949e !important; }
         
+        input[type="checkbox"] { margin-right: 10px; cursor: pointer; }
         .input-box { 
             background: var(--input); border: 1px solid var(--border); color: var(--text); 
             padding: 10px; border-radius: 8px; width: 100%; box-sizing: border-box; 
@@ -86,8 +94,14 @@
             justify-content: center; cursor: pointer; color: var(--border); font-size: 1.1rem;
         }
 
+        .info-note { 
+            font-size: 9px; opacity: 0.6; margin-bottom: 5px; font-style: italic; 
+            display: flex; justify-content: space-between; 
+        }
+
         @media (max-width: 800px) {
-            header { padding: 15px 20px; flex-direction: column; gap: 15px; }
+            header { padding: 15px 20px; }
+            h1 { font-size: 1.1rem; }
             .board { display: flex; flex-direction: row; height: auto; }
             .card, .silhouette { width: 85vw; height: 320px; margin-right: 15px; }
         }
@@ -101,10 +115,9 @@
             <img src="logo.png" alt="Logo">
             <h1>Odak Defteri v2.8.1</h1>
         </div>
-        <div class="actions">
-            <button class="btn-icon" onclick="location.reload()" title="Yenile">🔄</button>
-            <button class="btn-icon btn-danger" onclick="herSeyiSil()" title="Tüm Veriyi Sil">🗑️ Temizle</button>
-            <button class="btn-icon" onclick="temaDegistir()" id="theme-btn">🌙 Gece</button>
+        <div class="header-btns">
+            <button class="refresh-btn" onclick="location.reload()" title="Yenile">🔄</button>
+            <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">🌙 Gece Modu</button>
         </div>
     </header>
 
@@ -112,13 +125,12 @@
         <div class="board" id="board"></div>
     </div>
 
-    <footer>Odak Defterim &copy; 2026 | Beta v2.8.1</footer>
+    <footer>Odak Defterim &copy; 2026 | v2.8.1</footer>
 
     <script>
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
         const scrollArea = document.getElementById('scroll-area');
 
-        // Mouse tekerleği ile yatay kaydırma
         scrollArea.addEventListener('wheel', function(e) {
             if (e.deltaY !== 0) {
                 e.preventDefault();
@@ -129,7 +141,7 @@
         function temaSet(tema) {
             document.body.setAttribute('data-theme', tema);
             localStorage.setItem('tema', tema);
-            document.getElementById('theme-btn').innerHTML = tema === 'dark' ? '🌙 Gece' : '☀️ Gündüz';
+            document.getElementById('theme-btn').innerHTML = tema === 'dark' ? '🌙 Gece Modu' : '☀️ Gündüz Modu';
         }
 
         function temaDegistir() {
@@ -137,15 +149,6 @@
         }
 
         temaSet(localStorage.getItem('tema') || 'dark');
-
-        // TÜMÜNÜ SİLME FONKSİYONU
-        function herSeyiSil() {
-            if(confirm("Tüm günler ve görevler kalıcı olarak silinecek. Emin misiniz?")) {
-                gunler = [];
-                localStorage.removeItem('ajanda_v8');
-                ciz();
-            }
-        }
 
         function ciz() {
             const board = document.getElementById('board');
@@ -176,7 +179,15 @@
                                 </div>`;
                         }).join('')}
                     </div>
-                    <input type="text" class="input-box" placeholder="Görev oluştur..." maxlength="50" onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
+                    <div class="info-note">
+                        <span>! Acil, ? Bekleyebilir</span>
+                        <span>Maks. 50</span>
+                    </div>
+                    <input type="text" 
+                           class="input-box" 
+                           placeholder="Görev oluştur..." 
+                           maxlength="50"
+                           onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
                 `;
                 board.appendChild(card);
             });
