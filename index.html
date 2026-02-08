@@ -42,20 +42,34 @@
             text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;
         }
 
-        /* --- YAN PANEL (SIDEBAR) --- */
+        /* --- YAN PANEL (SIDEBAR) - SOLA ALINDI --- */
         #side-nav {
-            position: fixed; left: -280px; top: 0; width: 280px; height: 100%;
-            background: var(--sidebar); color: white; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1001; box-shadow: 10px 0 30px rgba(0,0,0,0.3);
-            display: flex; flex-direction: column; padding: 30px 20px; box-sizing: border-box;
+            position: fixed; 
+            left: -280px; /* Soldan gizli başla */
+            top: 0; 
+            width: 280px; 
+            height: 100%;
+            background: var(--sidebar); 
+            color: white; 
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1001; 
+            box-shadow: 10px 0 30px rgba(0,0,0,0.3); /* Gölge sağa doğru */
+            display: flex; 
+            flex-direction: column; 
+            padding: 30px 20px; 
+            box-sizing: border-box;
         }
-        #side-nav.active { left: 0; }
+        #side-nav.active { 
+            left: 0; /* İçeri kaydır */
+        }
+
         .nav-item {
             padding: 15px; margin: 8px 0; border-radius: 10px; cursor: pointer;
             transition: 0.2s; display: flex; align-items: center; gap: 12px; font-weight: 500;
         }
         .nav-item:hover { background: rgba(255,255,255,0.1); }
         .nav-item.active { background: var(--accent); color: white; }
+
         #overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.5); 
             display: none; z-index: 1000; backdrop-filter: blur(2px);
@@ -75,7 +89,7 @@
             box-shadow: var(--shadow);
         }
 
-        /* --- ORİJİNAL BOARD TASARIMI --- */
+        /* --- BOARD TASARIMI --- */
         .board-wrapper { 
             flex-grow: 1; overflow-x: auto; overflow-y: hidden; 
             display: flex; align-items: center; padding: 0 40px;
@@ -128,7 +142,7 @@
     <div id="overlay" onclick="toggleNav()"></div>
 
     <nav id="side-nav">
-        <h2 style="font-family:'Montserrat'; font-size:1.2rem; margin-bottom:30px; color:var(--accent)">PANEL</h2>
+        <h2 style="font-family:'Montserrat'; font-size:1.2rem; margin-bottom:30px; color:var(--accent)">MENÜ</h2>
         <div class="nav-item active" onclick="switchView('tasks')">📅 Görevlerim</div>
         <div class="nav-item" onclick="switchView('notes')">📝 Genel Notlar</div>
         <div style="margin-top: auto; opacity: 0.3; font-size: 0.7rem;">Sürüm v2.8.7</div>
@@ -161,7 +175,6 @@
     <footer>Odak Defterim &copy; 2026 | v2.8.7</footer>
 
     <script>
-        // Veri Anahtarları (v2.8.7 İzolasyonu)
         const KEY_DATA = 'odak_v287_tasks';
         const KEY_NOTE = 'odak_v287_note';
         const KEY_THEME = 'odak_v287_theme';
@@ -169,7 +182,6 @@
         let gunler = JSON.parse(localStorage.getItem(KEY_DATA)) || [];
         document.getElementById('main-note').value = localStorage.getItem(KEY_NOTE) || "";
 
-        // --- NAVİGASYON ---
         function toggleNav() {
             document.getElementById('side-nav').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
@@ -180,7 +192,12 @@
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             
             document.getElementById(view + '-view').classList.add('active');
-            event.currentTarget.classList.add('active');
+            
+            // Tıklanan nav-item'ı aktif yap
+            const items = document.querySelectorAll('.nav-item');
+            if(view === 'tasks') items[0].classList.add('active');
+            else items[1].classList.add('active');
+            
             toggleNav();
         }
 
@@ -188,7 +205,6 @@
             localStorage.setItem(KEY_NOTE, document.getElementById('main-note').value);
         }
 
-        // --- ORİJİNAL KAYDIRMA VE MANTIK ---
         const scrollArea = document.getElementById('scroll-area');
         scrollArea.addEventListener('wheel', (e) => {
             if (e.deltaY !== 0) {
