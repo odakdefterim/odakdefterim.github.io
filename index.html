@@ -25,7 +25,6 @@
         }
         body { display: flex; flex-direction: column; }
         
-        /* LOGO ALANI GERİ GELDİ */
         header { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; flex-shrink: 0; }
         .logo-area { display: flex; align-items: center; gap: 12px; }
         header img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
@@ -43,7 +42,6 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* PC İÇİN 2 SATIRLI DÜZEN */
         .board { 
             display: grid; 
             grid-template-rows: repeat(2, 290px); 
@@ -66,7 +64,6 @@
         .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
         .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; }
         
-        /* GÖREV ÖNCELİKLERİ GERİ GELDİ */
         .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; }
         .priority-high { color: var(--danger); font-weight: 600; }
         .priority-medium { color: var(--warning); font-weight: 500; }
@@ -83,7 +80,6 @@
 
         .info-note { font-size: 9px; opacity: 0.6; margin-bottom: 5px; font-style: italic; }
 
-        /* MOBİL - UPDATE ALMAYAN TELEFONLAR İÇİN ESNEK YAPI */
         @media (max-width: 800px) {
             header { padding: 15px 20px; }
             h1 { font-size: 1.2rem; }
@@ -98,7 +94,7 @@
     <header>
         <div class="logo-area">
             <img src="logo.png" alt="Logo">
-            <h1>Odak Defteri v2.7.6</h1>
+            <h1>Odak Defteri v2.7.7</h1>
         </div>
         <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">🌙 Gece Modu</button>
     </header>
@@ -113,7 +109,6 @@
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
         const scrollArea = document.getElementById('scroll-area');
 
-        // MOUSE SCROLL TAMİRİ
         scrollArea.addEventListener('wheel', function(e) {
             if (e.deltaY !== 0) {
                 e.preventDefault();
@@ -185,7 +180,9 @@
         }
 
         function kartSil(idx) {
-            if(confirm('Günü silmek istediğine emin misin?')) { gunler.splice(idx, 1); ciz(); }
+            // Onay kutusu kaldırıldı, direkt siliyor.
+            gunler.splice(idx, 1); 
+            ciz();
         }
 
         function ekle(e, idx) {
