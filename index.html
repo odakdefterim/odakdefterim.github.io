@@ -42,7 +42,7 @@
 <body>
     <header>
         <img src="logo.png" alt="Logo">
-        <h1>Odak Defteri v2.5</h1>
+        <h1>Odak Defteri v2.6</h1>
     </header>
     <div class="board-wrapper" id="scroll-area">
         <div class="board" id="board"></div>
@@ -50,44 +50,14 @@
     <footer>Odak Defterim &copy; 2026</footer>
 
     <script>
-        // 1. Veri Hazırlığı
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
 
-        // 2. Ses Motoru Yapılandırması
-        let audioCtx = null;
-        function sesCal(tip) {
-            try {
-                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                if (tip === 'basari') {
-                    osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
-                    osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
-                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-                } else {
-                    osc.frequency.setValueAtTime(440, audioCtx.currentTime);
-                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                }
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.2);
-            } catch (e) { console.log("Ses çalınamadı"); }
-        }
-
-        // 3. Yatay Kaydırma
         const scrollArea = document.getElementById('scroll-area');
         scrollArea.addEventListener('wheel', (evt) => { 
             evt.preventDefault(); 
             scrollArea.scrollLeft += evt.deltaY; 
         });
 
-        // 4. Arayüzü Çizme
         function ciz() {
             const board = document.getElementById('board');
             board.innerHTML = '';
@@ -132,7 +102,6 @@
             localStorage.setItem('ajanda_v8', JSON.stringify(gunler));
         }
 
-        // 5. Fonksiyonlar
         function yeniGun() {
             const t = new Date(); t.setDate(t.getDate() + gunler.length);
             const yazi = t.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', weekday: 'short' });
@@ -155,13 +124,10 @@
         }
 
         function tamam(gIdx, tIdx) {
-            const gorev = gunler[gIdx].gorevler[tIdx];
-            gorev.ok = !gorev.ok;
-            if (gorev.ok) sesCal('basari'); else sesCal('geri');
+            gunler[gIdx].gorevler[tIdx].ok = !gunler[gIdx].gorevler[tIdx].ok;
             ciz();
         }
 
-        // Başlat
         ciz();
     </script>
 </body>
