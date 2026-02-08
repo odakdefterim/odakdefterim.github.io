@@ -22,6 +22,7 @@
             margin: 0; padding: 0; height: 100vh; width: 100vw;
             overflow: hidden; background-color: var(--bg);
             color: var(--text); font-family: 'Inter', sans-serif;
+            touch-action: none; /* Pull-to-refresh için tarayıcı varsayılanını kapatıyoruz */
         }
         body { display: flex; flex-direction: column; }
         
@@ -29,7 +30,6 @@
         .logo-area { display: flex; align-items: center; gap: 12px; }
         header img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
         
-        /* Başlık fontu kalınlaştırıldı */
         h1 { font-family: 'Montserrat'; font-size: 1.4rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
 
         .theme-toggle {
@@ -42,6 +42,7 @@
             flex-grow: 1; overflow-x: auto; overflow-y: hidden; 
             display: flex; align-items: center; padding: 0 40px;
             -webkit-overflow-scrolling: touch;
+            touch-action: pan-x; /* Yatay kaydırmaya izin ver */
         }
 
         .board { 
@@ -64,7 +65,7 @@
         }
         
         .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
-        .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; }
+        .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; touch-action: pan-y; }
         
         .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; word-break: break-word; }
         .priority-high { color: var(--danger); font-weight: 600; }
@@ -89,6 +90,14 @@
             display: flex; justify-content: space-between; 
         }
 
+        /* Yenileme İndikatörü */
+        #refresh-indicator {
+            position: fixed; top: -50px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: white; padding: 10px 20px;
+            border-radius: 30px; font-size: 0.8rem; font-weight: bold;
+            transition: top 0.2s ease; z-index: 9999;
+        }
+
         @media (max-width: 800px) {
             header { padding: 15px 20px; }
             h1 { font-size: 1.1rem; }
@@ -100,6 +109,8 @@
     </style>
 </head>
 <body data-theme="dark">
+    <div id="refresh-indicator">Yenileniyor...</div>
+    
     <header>
         <div class="logo-area">
             <img src="logo.png" alt="Logo">
@@ -117,6 +128,34 @@
     <script>
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
         const scrollArea = document.getElementById('scroll-area');
+
+        // --- Sayfa Yenileme Mantığı ---
+        let touchStart = 0;
+        const refreshThreshold = 150; // Kaç piksel çekince yenilesin?
+        const indicator = document.getElementById('refresh-indicator');
+
+        window.addEventListener('touchstart', e => {
+            touchStart = e.touches[0].pageY;
+        }, {passive: true});
+
+        window.addEventListener('touchmove', e => {
+            const touchCurrent = e.touches[0].pageY;
+            const diff = touchCurrent - touchStart;
+            if (diff > 50 && diff < refreshThreshold) {
+                indicator.style.top = (diff / 3) + 'px';
+            }
+        }, {passive: true});
+
+        window.addEventListener('touchend', e => {
+            const touchEnd = e.changedTouches[0].pageY;
+            if (touchEnd - touchStart > refreshThreshold) {
+                indicator.style.top = '20px';
+                setTimeout(() => location.reload(), 500);
+            } else {
+                indicator.style.top = '-50px';
+            }
+        }, {passive: true});
+        // ------------------------------
 
         scrollArea.addEventListener('wheel', function(e) {
             if (e.deltaY !== 0) {
