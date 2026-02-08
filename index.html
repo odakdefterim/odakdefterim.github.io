@@ -12,11 +12,13 @@
             --border: #d0d7de; --danger: #cf222e; --warning: #9a6700; 
             --input: #ffffff; --shadow: 0 6px 16px rgba(0,0,0,0.08);
             --side-w: 280px;
+            --gray-icon: #6e7781;
         }
         [data-theme="dark"] {
             --bg: #0d1117; --card: #161b22; --accent: #58a6ff; --text: #c9d1d9; 
             --border: #30363d; --danger: #f85149; --warning: #d29922; 
             --input: #010409; --shadow: none;
+            --gray-icon: #8b949e;
         }
 
         html, body {
@@ -51,10 +53,11 @@
         .overlay.active { opacity: 1; visibility: visible; }
 
         .menu-item {
-            padding: 12px 15px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px;
+            padding: 12px 15px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px;
             font-weight: 500; transition: 0.2s; margin-bottom: 5px; color: var(--text);
         }
         .menu-item:hover { background: var(--bg); color: var(--accent); }
+        .menu-item .icon { font-size: 1.1rem; color: var(--gray-icon); width: 24px; text-align: center; }
 
         /* --- HEADER --- */
         header { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; flex-shrink: 0; }
@@ -71,138 +74,59 @@
         }
 
         /* --- BOARD --- */
-        .board-wrapper { 
-            flex-grow: 1; 
-            overflow-x: auto; 
-            overflow-y: hidden; 
-            display: flex; 
-            align-items: center; 
-            padding: 20px 40px; 
-            -webkit-overflow-scrolling: touch; 
-        }
-        
-        .board { 
-            display: grid; 
-            grid-template-rows: repeat(2, 340px); 
-            grid-auto-flow: column; 
-            gap: 25px; 
-            align-items: start;
-        }
+        .board-wrapper { flex-grow: 1; overflow-x: auto; overflow-y: hidden; display: flex; align-items: center; padding: 20px 40px; }
+        .board { display: grid; grid-template-rows: repeat(2, 340px); grid-auto-flow: column; gap: 25px; align-items: start; }
+        .card, .silhouette { width: 280px; height: 320px; border-radius: 12px; position: relative; box-sizing: border-box; }
 
-        .card, .silhouette { 
-            width: 280px; 
-            height: 320px; 
-            border-radius: 12px; 
-            flex-shrink: 0; 
-            position: relative; 
-            box-sizing: border-box;
-        }
-
-        .card { 
-            background: var(--card); 
-            padding: 20px; 
-            border: 1px solid var(--border); 
-            display: flex; 
-            flex-direction: column; 
-            box-shadow: var(--shadow); 
-        }
-
-        .task-list { 
-            overflow-y: auto; 
-            flex-grow: 1; 
-            margin: 10px 0; 
-            padding-right: 5px;
-        }
-        
+        .card { background: var(--card); padding: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: var(--shadow); }
+        .task-list { overflow-y: auto; flex-grow: 1; margin: 10px 0; padding-right: 5px; }
         .task-list::-webkit-scrollbar { width: 4px; }
         .task-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-        .silhouette { 
-            border: 2px dashed var(--border); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer; 
-            color: var(--border); 
-            font-size: 1.1rem; 
-            background: transparent;
-            transition: 0.2s;
-        }
+        .silhouette { border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--border); transition: 0.2s; }
         .silhouette:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* --- NOTES STYLES --- */
-        .note-item {
-            background: var(--bg);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-size: 0.85rem;
-            position: relative;
-            border-left: 4px solid var(--accent);
-            word-wrap: break-word;
-        }
-        .note-del {
-            float: right;
-            color: var(--danger);
-            font-size: 0.7rem;
-            cursor: pointer;
-            font-weight: bold;
-            margin-left: 10px;
-            opacity: 0.7;
-        }
-        .note-del:hover { opacity: 1; }
+        .note-item { background: var(--bg); padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 0.85rem; position: relative; border-left: 4px solid var(--accent); word-wrap: break-word; }
+        .note-del { float: right; color: var(--danger); font-size: 0.7rem; cursor: pointer; font-weight: bold; margin-left: 10px; opacity: 0.7; }
 
         @media (max-width: 800px) {
-            .board { 
-                display: flex; 
-                flex-direction: row; 
-                gap: 15px;
-                padding-bottom: 20px;
-            }
-            .card, .silhouette { 
-                width: 85vw; 
-                height: 400px; 
-            }
+            .board { display: flex; flex-direction: row; gap: 15px; }
+            .card, .silhouette { width: 85vw; height: 400px; }
             .board-wrapper { padding: 10px 20px; }
-            h1 { font-size: 0.9rem; }
-            header { padding: 15px 20px; }
         }
 
-        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; line-height: 1; }
-        .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; word-break: break-word; gap: 8px; }
-        .priority-high { color: var(--danger); font-weight: 600; }
-        .priority-medium { color: var(--warning); font-weight: 500; }
-        .priority-low { color: var(--accent); }
-        .done { text-decoration: line-through; opacity: 0.4 !important; color: #8b949e !important; }
+        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
+        .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; gap: 8px; }
+        .done { text-decoration: line-through; opacity: 0.4; }
         
-        .input-box { 
-            background: var(--input); border: 1px solid var(--border); color: var(--text); 
-            padding: 10px; border-radius: 8px; width: 100%; outline: none; 
-            font-size: 0.85rem; box-sizing: border-box; transition: 0.2s;
-        }
-        .input-box:focus { border-color: var(--accent); }
-        .info-note { font-size: 9px; opacity: 0.6; margin-bottom: 5px; font-style: italic; display: flex; justify-content: space-between; }
-        footer { padding: 10px; text-align: center; font-size: 0.7rem; opacity: 0.5; border-top: 1px solid var(--border); flex-shrink: 0; }
+        .input-box { background: var(--input); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; width: 100%; outline: none; font-size: 0.85rem; box-sizing: border-box; }
+        footer { padding: 10px; text-align: center; font-size: 0.7rem; opacity: 0.5; border-top: 1px solid var(--border); }
     </style>
 </head>
 <body data-theme="dark">
     <div class="overlay" id="overlay" onclick="closeAll()"></div>
     
     <nav id="sidebar">
-        <h2 style="font-family:'Montserrat'; color:var(--accent); margin-bottom:30px; font-size: 1.5rem;">MENU</h2>
-        <div class="menu-item" onclick="closeAll()">📅 Günlük Plan</div>
-        <div class="menu-item" onclick="openNotes()">📝 Notlarım</div>
-        <div class="menu-item" onclick="alert('Odak Defteri v2.9.8\nKişisel Planlayıcı'); closeAll()">ℹ️ Hakkında</div>
+        <h2 style="font-family:'Montserrat'; color:var(--accent); margin-bottom:30px; font-size: 1.3rem;">KONTROL</h2>
+        <div class="menu-item" onclick="closeAll()">
+            <span class="icon">⊞</span> <span>Günlük Plan</span>
+        </div>
+        <div class="menu-item" onclick="openNotes()">
+            <span class="icon">▤</span> <span>Notlarım</span>
+        </div>
+        <div class="menu-item" onclick="alert('Odak Defteri v2.9.8\nKişisel Planlayıcı'); closeAll()">
+            <span class="icon">ⓘ</span> <span>Hakkında</span>
+        </div>
     </nav>
 
     <div id="notes-panel">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <h3 style="font-family:'Montserrat'; margin:0; font-size:1.1rem;">GENEL NOTLAR</h3>
-            <span onclick="closeAll()" style="cursor:pointer; font-size:1.5rem; line-height: 1;">&times;</span>
+            <span onclick="closeAll()" style="cursor:pointer; font-size:1.5rem;">&times;</span>
         </div>
-        <textarea id="note-input" class="input-box" style="height: 100px; margin-bottom:10px; resize: none;" placeholder="Kalıcı bir not ekle..."></textarea>
+        <textarea id="note-input" class="input-box" style="height: 100px; margin-bottom:10px; resize: none;" placeholder="Notunuzu buraya yazın..."></textarea>
         <button onclick="saveNote()" style="background:var(--accent); color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:600; width:100%;">Ekle</button>
-        <div id="notes-list" style="margin-top:20px; overflow-y:auto; flex-grow:1; padding-right: 5px;"></div>
+        <div id="notes-list" style="margin-top:20px; overflow-y:auto; flex-grow:1;"></div>
     </div>
 
     <header>
@@ -218,7 +142,7 @@
         <div class="board" id="board"></div>
     </div>
 
-    <footer>Odak Defterim &copy; 2026 | Tüm notlar yerel hafızadadır.</footer>
+    <footer>Odak Defterim &copy; 2026 | Yerel Depolama Aktif</footer>
 
     <script>
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
@@ -240,13 +164,6 @@
             document.getElementById('notes-panel').classList.remove('open');
             document.getElementById('overlay').classList.remove('active');
         }
-
-        scrollArea.addEventListener('wheel', (e) => {
-            if (e.deltaY !== 0 && window.innerWidth > 800) {
-                e.preventDefault();
-                scrollArea.scrollLeft += (e.deltaY * 1.5);
-            }
-        }, { passive: false });
 
         function temaSet(tema) {
             document.body.setAttribute('data-theme', tema);
@@ -287,8 +204,7 @@
                         }).join('')}
                     </div>
                     <div class="info-note"><span>! Acil, ? Bekle</span><span>${gun.gorevler.length}/50</span></div>
-                    <input type="text" class="input-box" placeholder="Görev oluştur..." maxlength="50" 
-                           onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
+                    <input type="text" class="input-box" placeholder="Görev oluştur..." maxlength="50" onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
                 `;
                 board.appendChild(card);
             });
@@ -298,7 +214,6 @@
             siluet.onclick = yeniGun;
             siluet.innerHTML = `<span>+ Yeni Gün</span>`;
             board.appendChild(siluet);
-            
             localStorage.setItem('ajanda_v8', JSON.stringify(gunler));
         }
 
@@ -308,31 +223,18 @@
             const yazi = bugun.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', weekday: 'short' });
             gunler.push({ tarih: yazi, gorevler: [] });
             ciz();
-            setTimeout(() => { 
-                scrollArea.scrollTo({ left: scrollArea.scrollWidth, behavior: 'smooth' }); 
-            }, 50);
+            setTimeout(() => { scrollArea.scrollTo({ left: scrollArea.scrollWidth, behavior: 'smooth' }); }, 50);
         }
 
-        function kartSil(idx) { 
-            if(confirm('Bu günü silmek istediğinize emin misiniz?')) { 
-                gunler.splice(idx, 1); 
-                ciz(); 
-            } 
-        }
-
+        function kartSil(idx) { if(confirm('Bu günü silmek istediğinize emin misiniz?')) { gunler.splice(idx, 1); ciz(); } }
         function ekle(e, idx) {
             const yazi = e.target.value.trim();
             if(!yazi) return;
-            if(gunler[idx].gorevler.length >= 50) return alert("Maksimum görev sınırı!");
             gunler[idx].gorevler.push({ txt: yazi, ok: false });
             e.target.value = "";
             ciz();
         }
-
-        function tamam(gIdx, tIdx) { 
-            gunler[gIdx].gorevler[tIdx].ok = !gunler[gIdx].gorevler[tIdx].ok; 
-            ciz(); 
-        }
+        function tamam(gIdx, tIdx) { gunler[gIdx].gorevler[tIdx].ok = !gunler[gIdx].gorevler[tIdx].ok; ciz(); }
 
         function saveNote() {
             const inp = document.getElementById('note-input');
@@ -342,7 +244,6 @@
             drawNotes();
             localStorage.setItem('odak_notlar_v9', JSON.stringify(notlar));
         }
-
         function drawNotes() {
             const list = document.getElementById('notes-list');
             list.innerHTML = notlar.map((n, idx) => `
@@ -352,14 +253,7 @@
                 </div>
             `).join('');
         }
-
-        function deleteNote(idx) { 
-            if(confirm('Notu silmek istiyor musunuz?')) {
-                notlar.splice(idx, 1); 
-                localStorage.setItem('odak_notlar_v9', JSON.stringify(notlar)); 
-                drawNotes(); 
-            }
-        }
+        function deleteNote(idx) { if(confirm('Silinsin mi?')) { notlar.splice(idx, 1); localStorage.setItem('odak_notlar_v9', JSON.stringify(notlar)); drawNotes(); } }
 
         ciz();
     </script>
