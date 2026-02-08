@@ -68,55 +68,93 @@
             text-transform: uppercase; font-weight: 600;
         }
 
-        /* --- PTR --- */
-        #ptr-element {
-            position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
-            width: 35px; height: 35px; background: var(--card);
-            border: 2px solid var(--accent); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 2000;
-            opacity: 0; transition: opacity 0.2s;
-        }
-        #ptr-element::after { content: ""; width: 14px; height: 14px; border: 2px solid var(--accent); border-top-color: transparent; border-radius: 50%; }
-        .ptr-refreshing::after { animation: spin 0.7s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
         /* --- BOARD --- */
-        .board-wrapper { flex-grow: 1; overflow-x: auto; overflow-y: hidden; display: flex; align-items: center; padding: 0 40px; -webkit-overflow-scrolling: touch; }
-        .board { display: grid; grid-template-rows: repeat(2, 290px); grid-auto-flow: column; gap: 20px; height: 85%; align-items: start; }
-        .card, .silhouette { width: 280px; height: 300px; border-radius: 12px; flex-shrink: 0; position: relative; }
-        .card { background: var(--card); padding: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: var(--shadow); }
+        .board-wrapper { 
+            flex-grow: 1; 
+            overflow-x: auto; 
+            overflow-y: hidden; 
+            display: flex; 
+            align-items: center; 
+            padding: 20px 40px; 
+            -webkit-overflow-scrolling: touch; 
+        }
+        
+        .board { 
+            display: grid; 
+            /* Satır yüksekliğini min-content yaparak çakışmayı önledik */
+            grid-template-rows: repeat(2, min-content); 
+            grid-auto-flow: column; 
+            gap: 25px; 
+            align-items: start;
+        }
+
+        .card, .silhouette { 
+            width: 280px; 
+            height: 320px; /* Kart yüksekliği sabitlendi */
+            border-radius: 12px; 
+            flex-shrink: 0; 
+            position: relative; 
+            box-sizing: border-box;
+        }
+
+        .card { 
+            background: var(--card); 
+            padding: 20px; 
+            border: 1px solid var(--border); 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: var(--shadow); 
+        }
+
+        .task-list { 
+            overflow-y: auto; 
+            flex-grow: 1; 
+            margin: 10px 0; 
+            padding-right: 5px;
+        }
+        
+        /* Kaydırma çubuğu tasarımı */
+        .task-list::-webkit-scrollbar { width: 4px; }
+        .task-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+        .silhouette { 
+            border: 2px dashed var(--border); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            color: var(--border); 
+            font-size: 1.1rem; 
+            background: transparent;
+        }
+
+        @media (max-width: 800px) {
+            .board { 
+                display: flex; 
+                flex-direction: row; 
+                gap: 15px;
+            }
+            .card, .silhouette { 
+                width: 80vw; 
+                height: 400px; 
+            }
+            .board-wrapper { padding: 10px 20px; }
+        }
+
+        /* Diğer stiller (task-item, delete-btn vb.) aynı kalabilir */
         .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
-        .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; }
         .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; word-break: break-word; }
         .priority-high { color: var(--danger); font-weight: 600; }
         .priority-medium { color: var(--warning); font-weight: 500; }
         .priority-low { color: var(--accent); }
         .done { text-decoration: line-through; opacity: 0.4 !important; color: #8b949e !important; }
-        
-        .input-box { background: var(--input); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; width: 100%; outline: none; font-size: 0.85rem; }
-        .silhouette { border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--border); font-size: 1.1rem; }
+        .input-box { background: var(--input); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; width: 100%; outline: none; font-size: 0.85rem; box-sizing: border-box; }
         .info-note { font-size: 9px; opacity: 0.6; margin-bottom: 5px; font-style: italic; display: flex; justify-content: space-between; }
-
-        /* --- NOTES UI --- */
-        .note-item { background: var(--bg); padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border); font-size: 0.85rem; position: relative; line-height: 1.4; }
-        .note-del { color: var(--danger); cursor: pointer; float: right; font-weight: bold; font-size: 10px; margin-left: 10px; }
-
-        @media (max-width: 800px) {
-            header { padding: 15px 20px; }
-            h1 { font-size: 1.1rem; }
-            .board { display: flex; flex-direction: row; height: auto; }
-            .card, .silhouette { width: 85vw; height: 320px; margin-right: 15px; }
-            #notes-panel { width: 100%; right: -100%; }
-        }
-        footer { padding: 10px; text-align: center; font-size: 0.75rem; opacity: 0.5; border-top: 1px solid var(--border); }
+        footer { padding: 10px; text-align: center; font-size: 0.75rem; opacity: 0.5; border-top: 1px solid var(--border); flex-shrink: 0; }
     </style>
 </head>
 <body data-theme="dark">
-
     <div class="overlay" id="overlay" onclick="closeAll()"></div>
-    <div id="ptr-element"></div>
-
     <nav id="sidebar">
         <h2 style="font-family:'Montserrat'; color:var(--accent); margin-bottom:30px;">MENU</h2>
         <div class="menu-item" onclick="closeAll()">📅 Günlük Plan</div>
@@ -150,12 +188,11 @@
     <footer>Odak Defterim &copy; 2026 | v2.9.8</footer>
 
     <script>
+        // JS Kodların (ciz, ekle, tamam, temaSet vb.) aynen buraya gelecek
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
         let notlar = JSON.parse(localStorage.getItem('odak_notlar_v9')) || [];
         const scrollArea = document.getElementById('scroll-area');
-        const ptr = document.getElementById('ptr-element');
 
-        // Menü Fonksiyonları
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('overlay').classList.toggle('active');
@@ -172,37 +209,10 @@
             document.getElementById('overlay').classList.remove('active');
         }
 
-        // Mouse Wheel Scroll
         scrollArea.addEventListener('wheel', (e) => {
             if (e.deltaY !== 0) { e.preventDefault(); scrollArea.scrollLeft += (e.deltaY * 0.8); }
         }, { passive: false });
 
-        // Pull To Refresh
-        let touchStart = 0;
-        window.addEventListener('touchstart', e => { if (window.scrollY <= 5) touchStart = e.touches[0].pageY; }, {passive: true});
-        window.addEventListener('touchmove', e => {
-            if (touchStart === 0) return;
-            const diff = e.touches[0].pageY - touchStart;
-            if (diff > 0 && diff < 150) {
-                ptr.style.opacity = "1";
-                const move = Math.min(diff / 1.5, 70);
-                ptr.style.transform = `translateX(-50%) translateY(${move}px) rotate(${diff * 2}deg)`;
-            }
-        }, {passive: true});
-        window.addEventListener('touchend', e => {
-            const diff = e.changedTouches[0].pageY - touchStart;
-            if (touchStart !== 0 && diff > 100) {
-                ptr.classList.add('ptr-refreshing');
-                ptr.style.transform = `translateX(-50%) translateY(70px)`;
-                setTimeout(() => location.reload(), 800);
-            } else {
-                ptr.style.opacity = "0";
-                ptr.style.transform = `translateX(-50%) translateY(0)`;
-            }
-            touchStart = 0;
-        }, {passive: true});
-
-        // Tema
         function temaSet(tema) {
             document.body.setAttribute('data-theme', tema);
             localStorage.setItem('tema', tema);
@@ -211,7 +221,6 @@
         function temaDegistir() { temaSet(document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
         temaSet(localStorage.getItem('tema') || 'dark');
 
-        // Görev Çizimi
         function ciz() {
             const board = document.getElementById('board');
             board.innerHTML = '';
@@ -237,7 +246,7 @@
                             </div>`;
                         }).join('')}
                     </div>
-                    <div class="info-note"><span>! Acil, ? Bekleyebilir</span><span>Maks. 50</span></div>
+                    <div class="info-note"><span>! Acil, ? Bekle</span><span>Maks. 50</span></div>
                     <input type="text" class="input-box" placeholder="Görev oluştur..." maxlength="50" onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
                 `;
                 board.appendChild(card);
@@ -267,7 +276,6 @@
         }
         function tamam(gIdx, tIdx) { gunler[gIdx].gorevler[tIdx].ok = !gunler[gIdx].gorevler[tIdx].ok; ciz(); }
 
-        // Notlar Sistemi
         function saveNote() {
             const inp = document.getElementById('note-input');
             if(!inp.value.trim()) return;
