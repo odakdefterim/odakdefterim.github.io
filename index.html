@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Odak Defteri Pro</title>
+    <title>Odak Defteri Pro v2.8.0</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -28,7 +28,7 @@
         header { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; flex-shrink: 0; }
         .logo-area { display: flex; align-items: center; gap: 12px; }
         header img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
-        h1 { font-family: 'Montserrat'; font-size: 1.6rem; margin: 0; }
+        h1 { font-family: 'Montserrat'; font-size: 1.4rem; margin: 0; }
 
         .theme-toggle {
             background: var(--card); border: 1px solid var(--border); color: var(--text);
@@ -64,37 +64,44 @@
         .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
         .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; }
         
-        .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; }
+        .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; word-break: break-word; }
         .priority-high { color: var(--danger); font-weight: 600; }
         .priority-medium { color: var(--warning); font-weight: 500; }
         .priority-low { color: var(--accent); }
         .done { text-decoration: line-through; opacity: 0.4 !important; color: #8b949e !important; }
         
         input[type="checkbox"] { margin-right: 10px; cursor: pointer; }
-        .input-box { background: var(--input); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; width: 100%; box-sizing: border-box; outline: none; }
+        .input-box { 
+            background: var(--input); border: 1px solid var(--border); color: var(--text); 
+            padding: 10px; border-radius: 8px; width: 100%; box-sizing: border-box; 
+            outline: none; font-size: 0.85rem;
+        }
         
         .silhouette { 
             border: 2px dashed var(--border); display: flex; align-items: center; 
             justify-content: center; cursor: pointer; color: var(--border); font-size: 1.1rem;
         }
 
-        .info-note { font-size: 9px; opacity: 0.6; margin-bottom: 5px; font-style: italic; }
+        .info-note { 
+            font-size: 9px; opacity: 0.6; margin-bottom: 5px; font-style: italic; 
+            display: flex; justify-content: space-between; 
+        }
 
         @media (max-width: 800px) {
             header { padding: 15px 20px; }
-            h1 { font-size: 1.2rem; }
+            h1 { font-size: 1.1rem; }
             .board { display: flex; flex-direction: row; height: auto; }
             .card, .silhouette { width: 85vw; height: 320px; margin-right: 15px; }
         }
 
-        footer { padding: 15px; text-align: center; font-size: 0.8rem; opacity: 0.6; border-top: 1px solid var(--border); }
+        footer { padding: 10px; text-align: center; font-size: 0.75rem; opacity: 0.5; border-top: 1px solid var(--border); }
     </style>
 </head>
 <body data-theme="dark">
     <header>
         <div class="logo-area">
             <img src="logo.png" alt="Logo">
-            <h1>Odak Defteri v2.7.7</h1>
+            <h1>Odak Defteri v2.8.0</h1>
         </div>
         <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">🌙 Gece Modu</button>
     </header>
@@ -103,7 +110,7 @@
         <div class="board" id="board"></div>
     </div>
 
-    <footer>Odak Defterim &copy; 2026</footer>
+    <footer>Odak Defterim &copy; 2026 | v2.8.0</footer>
 
     <script>
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
@@ -157,8 +164,15 @@
                                 </div>`;
                         }).join('')}
                     </div>
-                    <div class="info-note">! Acil, ? Bekleyebilir</div>
-                    <input type="text" class="input-box" placeholder="Görev oluştur..." onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
+                    <div class="info-note">
+                        <span>! Acil, ? Bekleyebilir</span>
+                        <span>Maks. 50</span>
+                    </div>
+                    <input type="text" 
+                           class="input-box" 
+                           placeholder="Görev oluştur..." 
+                           maxlength="50"
+                           onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
                 `;
                 board.appendChild(card);
             });
@@ -180,14 +194,14 @@
         }
 
         function kartSil(idx) {
-            // Onay kutusu kaldırıldı, direkt siliyor.
             gunler.splice(idx, 1); 
             ciz();
         }
 
         function ekle(e, idx) {
-            if(!e.target.value.trim()) return;
-            gunler[idx].gorevler.push({ txt: e.target.value, ok: false });
+            const yazi = e.target.value.trim();
+            if(!yazi) return;
+            gunler[idx].gorevler.push({ txt: yazi, ok: false });
             e.target.value = "";
             ciz();
         }
