@@ -21,12 +21,11 @@
             margin: 0; padding: 0; height: 100vh; width: 100vw;
             background-color: var(--bg); color: var(--text);
             font-family: 'Inter', sans-serif; overflow: hidden;
-            overscroll-behavior-y: contain; /* Tarayıcı varsayılanını engeller */
+            overscroll-behavior-y: contain;
         }
 
         body { display: flex; flex-direction: column; position: relative; }
 
-        /* --- Yenileme İndikatörü --- */
         #pull-to-refresh {
             position: absolute; top: 0; left: 0; width: 100%; height: 60px;
             display: flex; align-items: center; justify-content: center;
@@ -37,8 +36,16 @@
 
         header { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; flex-shrink: 0; }
         .logo-area { display: flex; align-items: center; gap: 12px; }
-        header img { width: 35px; height: 35px; border-radius: 6px; }
-        h1 { font-family: 'Montserrat'; font-size: 1.4rem; font-weight: 800; margin: 0; }
+        
+        /* Logo Görseli Ayarları */
+        header .logo-img { 
+            width: 38px; 
+            height: 38px; 
+            object-fit: contain; 
+            border-radius: 8px;
+        }
+
+        h1 { font-family: 'Montserrat'; font-size: 1.4rem; font-weight: 800; margin: 0; line-height: 1.1; }
 
         .theme-toggle {
             background: var(--card); border: 1px solid var(--border); color: var(--text);
@@ -76,9 +83,8 @@
 
     <header>
         <div class="logo-area">
-            <img src="logo.png" alt="Logo">
-            <h1>Odak Defterim Beta 
-                v2.8.0</h1>
+            <img src="logo.png" alt="Odak Defterim" class="logo-img">
+            <h1>Odak Defterim Beta<br>v2.8.0</h1>
         </div>
         <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">🌙 Gece Modu</button>
     </header>
@@ -94,7 +100,6 @@
         const scrollArea = document.getElementById('scroll-area');
         const ptr = document.getElementById('pull-to-refresh');
 
-        // --- YENİLEME MANTIĞI ---
         let touchStart = 0;
         let isPulling = false;
 
@@ -106,7 +111,6 @@
             const touchCurrent = e.touches[0].pageY;
             const diff = touchCurrent - touchStart;
 
-            // En üstteysen ve aşağı çekiyorsan tetiklenir
             if (window.scrollY <= 0 && diff > 0) {
                 isPulling = true;
                 const pullHeight = Math.min(diff / 2, 70); 
@@ -127,7 +131,6 @@
             isPulling = false;
         });
 
-        // Yatay Kaydırma
         scrollArea.addEventListener('wheel', (e) => {
             if (e.deltaY !== 0) {
                 e.preventDefault();
@@ -135,7 +138,6 @@
             }
         }, { passive: false });
 
-        // Tema ve Çizim Fonksiyonları
         function temaSet(tema) {
             document.body.setAttribute('data-theme', tema);
             localStorage.setItem('tema', tema);
@@ -156,7 +158,7 @@
                     <div class="task-list">${gun.gorevler.map((t, tIdx) => `
                         <div class="task-item ${t.ok ? 'done' : ''}">
                             <input type="checkbox" ${t.ok ? 'checked' : ''} onchange="tamam(${gIdx},${tIdx})">
-                            <span>${t.txt}</span>
+                            <span style="margin-left:8px;">${t.txt}</span>
                         </div>`).join('')}
                     </div>
                     <input type="text" class="input-box" placeholder="Görev..." onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
