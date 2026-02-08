@@ -7,51 +7,98 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
+        /* TEMA DEĞİŞKENLERİ */
         :root {
-            --bg: #0d1117; --card: #161b22; --accent: #58a6ff; --text: #c9d1d9; --danger: #f85149; --warning: #d29922;
+            --bg: #ffffff; --card: #f6f8fa; --accent: #0969da; --text: #1f2328; --border: #d0d7de; --danger: #cf222e; --warning: #9a6700; --input: #ffffff;
         }
+        [data-theme="dark"] {
+            --bg: #0d1117; --card: #161b22; --accent: #58a6ff; --text: #c9d1d9; --border: #30363d; --danger: #f85149; --warning: #d29922; --input: #010409;
+        }
+
         html, body {
             margin: 0; padding: 0; height: 100vh; width: 100vw;
             overflow: hidden; background-color: var(--bg);
-            color: var(--text); font-family: 'Inter', sans-serif;
+            color: var(--text); font-family: 'Inter', sans-serif; transition: background 0.3s, color 0.3s;
         }
         body { display: flex; flex-direction: column; }
-        header { display: flex; align-items: center; gap: 12px; padding: 20px 40px; flex-shrink: 0; }
+        
+        header { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; flex-shrink: 0; }
+        .logo-area { display: flex; align-items: center; gap: 12px; }
         header img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
-        h1 { font-family: 'Montserrat'; font-size: 1.6rem; margin: 0; color: #fff; }
+        h1 { font-family: 'Montserrat'; font-size: 1.6rem; margin: 0; color: var(--text); }
+
+        /* TEMA BUTONU */
+        .theme-toggle {
+            background: var(--card); border: 1px solid var(--border); color: var(--text);
+            padding: 8px 12px; border-radius: 20px; cursor: pointer; font-size: 0.8rem;
+            display: flex; align-items: center; gap: 8px; transition: 0.2s;
+        }
+        .theme-toggle:hover { border-color: var(--accent); }
+
         .board-wrapper { flex-grow: 1; overflow-x: auto; overflow-y: hidden; display: flex; align-items: center; padding: 0 40px; scroll-behavior: smooth; }
         .board { display: grid; grid-template-rows: repeat(2, 1fr); grid-auto-flow: column; gap: 20px; height: 82%; }
-        .card { background: var(--card); width: 280px; max-height: 300px; border-radius: 12px; padding: 20px; border: 1px solid #30363d; display: flex; flex-direction: column; position: relative; }
-        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #484f58; font-size: 18px; cursor: pointer; transition: 0.2s; }
+        
+        .card { background: var(--card); width: 280px; max-height: 300px; border-radius: 12px; padding: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; position: relative; }
+        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: var(--border); font-size: 18px; cursor: pointer; transition: 0.2s; }
         .delete-btn:hover { color: var(--danger); transform: scale(1.2); }
+        
         .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; padding-right: 5px; }
         .task-list::-webkit-scrollbar { width: 4px; }
-        .task-list::-webkit-scrollbar-thumb { background: #30363d; border-radius: 10px; }
+        .task-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        
         .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; }
         .priority-high { color: var(--danger); font-weight: 500; }
         .priority-medium { color: var(--warning); font-weight: 500; }
         .priority-low { color: var(--accent); }
-        .done { text-decoration: line-through; opacity: 0.3 !important; color: #8b949e !important; }
+        .done { text-decoration: line-through; opacity: 0.4 !important; color: grey !important; }
+        
         input[type="checkbox"] { accent-color: var(--accent); margin-right: 10px; cursor: pointer; }
-        .input-box { background: #010409; border: 1px solid #30363d; color: white; padding: 10px; border-radius: 8px; width: 100%; box-sizing: border-box; outline: none; font-size: 0.85rem; }
-        .silhouette { width: 280px; height: 100%; border-radius: 12px; border: 2px dashed #30363d; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #484f58; transition: 0.3s; }
-        .silhouette:hover { border-color: var(--accent); color: var(--accent); background: rgba(88, 166, 255, 0.03); }
-        footer { padding: 15px 40px; border-top: 1px solid #30363d; text-align: center; font-size: 0.8rem; color: #484f58; }
+        .input-box { background: var(--input); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; width: 100%; box-sizing: border-box; outline: none; font-size: 0.85rem; }
+        
+        .silhouette { width: 280px; height: 100%; border-radius: 12px; border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--border); transition: 0.3s; }
+        .silhouette:hover { border-color: var(--accent); color: var(--accent); background: rgba(88, 166, 255, 0.05); }
+        
+        footer { padding: 15px 40px; border-top: 1px solid var(--border); text-align: center; font-size: 0.8rem; color: var(--border); }
     </style>
 </head>
-<body>
+<body data-theme="dark">
     <header>
-        <img src="logo.png" alt="Logo">
-        <h1>Odak Defteri v2.6</h1>
+        <div class="logo-area">
+            <img src="logo.png" alt="Logo">
+            <h1>Odak Defteri</h1>
+        </div>
+        <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">
+            🌙 Gece Modu
+        </button>
     </header>
+
     <div class="board-wrapper" id="scroll-area">
         <div class="board" id="board"></div>
     </div>
+
     <footer>Odak Defterim &copy; 2026</footer>
 
     <script>
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
+        
+        // --- TEMA YÖNETİMİ ---
+        function temaSet(tema) {
+            document.body.setAttribute('data-theme', tema);
+            localStorage.setItem('tema', tema);
+            const btn = document.getElementById('theme-btn');
+            btn.innerHTML = tema === 'dark' ? '🌙 Gece Modu' : '☀️ Gündüz Modu';
+        }
 
+        function temaDegistir() {
+            const suanki = document.body.getAttribute('data-theme');
+            temaSet(suanki === 'dark' ? 'light' : 'dark');
+        }
+
+        // Açılışta temayı yükle
+        const kaydedilenTema = localStorage.getItem('tema') || 'dark';
+        temaSet(kaydedilenTema);
+
+        // --- KAYDIRMA VE ÇİZİM ---
         const scrollArea = document.getElementById('scroll-area');
         scrollArea.addEventListener('wheel', (evt) => { 
             evt.preventDefault(); 
@@ -87,7 +134,6 @@
                                 </div>`;
                         }).join('')}
                     </div>
-                    <div style="font-size: 9px; color: #484f58; margin-bottom: 5px;"><i>! Acil, ? Bekleyebilir</i></div>
                     <input type="text" class="input-box" placeholder="Görev oluştur..." onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
                 `;
                 board.appendChild(card);
