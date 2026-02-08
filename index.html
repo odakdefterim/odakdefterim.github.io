@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Odak Defteri Beta v2.8.1</title>
+    <title>Odak Defteri Beta v2.8.3</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -41,7 +41,6 @@
             text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;
         }
 
-        /* --- PROGRESS BAR CSS --- */
         .progress-track {
             width: 100%; height: 6px; background: var(--prog-track);
             border-radius: 10px; margin: 12px 0; overflow: hidden;
@@ -50,21 +49,6 @@
             height: 100%; background: var(--accent);
             transition: width 0.3s ease; width: 0%;
         }
-
-        #ptr-element {
-            position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
-            width: 35px; height: 35px; background: var(--card);
-            border: 2px solid var(--accent); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 2000;
-            opacity: 0; transition: opacity 0.2s;
-        }
-        #ptr-element::after {
-            content: ""; width: 14px; height: 14px;
-            border: 2px solid var(--accent); border-top-color: transparent; border-radius: 50%;
-        }
-        .ptr-refreshing::after { animation: spin 0.7s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
         .board-wrapper { 
             flex-grow: 1; overflow-x: auto; overflow-y: hidden; 
@@ -87,7 +71,9 @@
             display: flex; flex-direction: column; box-shadow: var(--shadow);
         }
         
-        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
+        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; line-height: 1; }
+        .delete-btn:hover { color: var(--danger); }
+
         .task-list { overflow-y: auto; flex-grow: 1; margin-bottom: 10px; }
         
         .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; word-break: break-word; }
@@ -122,8 +108,6 @@
 </head>
 <body data-theme="dark">
 
-    <div id="ptr-element"></div>
-
     <header>
         <div class="logo-area">
             <img src="logo.png" alt="Logo">
@@ -136,12 +120,11 @@
         <div class="board" id="board"></div>
     </div>
 
-    <footer>Odak Defterim &copy; 2026 | v2.8.2</footer>
+    <footer>Odak Defterim &copy; 2026 | v2.8.3</footer>
 
     <script>
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
         const scrollArea = document.getElementById('scroll-area');
-        const ptr = document.getElementById('ptr-element');
 
         scrollArea.addEventListener('wheel', function(e) {
             if (e.deltaY !== 0) {
@@ -225,11 +208,10 @@
             ciz();
         }
 
+        // Onay sormadan silen güncellenmiş fonksiyon
         function kartSil(idx) {
-            if(confirm('Bu günü silmek istediğine emin misin?')) {
-                gunler.splice(idx, 1); 
-                ciz();
-            }
+            gunler.splice(idx, 1); 
+            ciz();
         }
 
         function ekle(e, idx) {
