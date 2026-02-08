@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Odak Defteri Beta v2.8.9</title>
+    <title>Odak Defteri Retro v2.9.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f2f2f7; --card: #ffffff; --accent: #007aff; --text: #1c1c1e; 
-            --border: #d1d1d6; --danger: #ff3b30; --input: #f2f2f7;
-            --sidebar-bg: #ffffff; --overlay: rgba(0,0,0,0.4);
-        }
-        [data-theme="dark"] {
-            --bg: #000000; --card: #1c1c1e; --accent: #0a84ff; --text: #ffffff; 
-            --border: #38383a; --danger: #ff453a; --input: #2c2c2e;
-            --sidebar-bg: #1c1c1e; --overlay: rgba(0,0,0,0.7);
+            --bg: #09090b;
+            --card-bg: #18181b;
+            --accent: #8b5cf6; /* Eski meşhur mor tonu */
+            --accent-hover: #a78bfa;
+            --text: #f4f4f5;
+            --text-dim: #a1a1aa;
+            --border: #27272a;
+            --danger: #ef4444;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -25,152 +25,96 @@
             overflow: hidden;
         }
 
-        /* --- HEADER --- */
+        /* --- HEADER (ESKİ STİL) --- */
         header {
-            height: 65px; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; background: var(--card); border-bottom: 1px solid var(--border);
-            position: relative; z-index: 10;
+            height: 70px; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 25px; background: rgba(24, 24, 27, 0.8);
+            backdrop-filter: blur(10px); border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 100;
         }
-        .logo-area { display: flex; align-items: center; gap: 10px; }
-        .logo-area h1 { font-family: 'Montserrat'; font-size: 1.1rem; margin: 0; }
-        
-        .btn {
-            background: var(--input); border: none; color: var(--text);
-            width: 40px; height: 40px; border-radius: 10px; cursor: pointer;
-            font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+        .logo { font-family: 'Montserrat'; font-weight: 800; font-size: 1.3rem; letter-spacing: -1px; background: linear-gradient(45deg, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* --- ANA AKIŞ --- */
+        main { 
+            height: calc(100% - 70px); width: 100%; 
+            display: flex; overflow-x: auto; overflow-y: hidden;
+            padding: 25px; gap: 20px; scroll-behavior: smooth;
         }
 
-        /* --- SOL MENÜ (SIDEBAR) --- */
-        #side-nav {
-            position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
-            background: var(--sidebar-bg); z-index: 1001;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 30px 20px; box-shadow: 5px 0 20px rgba(0,0,0,0.1);
-        }
-        #side-nav.active { transform: translateX(280px); }
-
-        .nav-item {
-            padding: 15px; margin-bottom: 8px; border-radius: 12px;
-            font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px;
-            transition: 0.2s;
-        }
-        .nav-item.active { background: var(--accent); color: #fff; }
-        .nav-item:not(.active):hover { background: var(--input); }
-
-        #overlay {
-            position: fixed; inset: 0; background: var(--overlay);
-            opacity: 0; visibility: hidden; transition: 0.3s; z-index: 1000;
-        }
-        #overlay.active { opacity: 1; visibility: visible; }
-
-        /* --- İÇERİK ALANI --- */
-        main { height: calc(100% - 65px); width: 100%; display: flex; }
-        .view { display: none; width: 100%; height: 100%; padding: 20px; }
-        .view.active { display: block; }
-
-        /* --- KARTLAR (BOARD) --- */
-        .board-container {
-            display: flex; gap: 20px; overflow-x: auto; height: 100%;
-            padding-bottom: 20px; align-items: flex-start;
-        }
+        /* --- KART TASARIMI (ESKİ ŞIKLIK) --- */
         .card {
-            min-width: 300px; max-width: 300px; background: var(--card);
-            border-radius: 16px; border: 1px solid var(--border);
-            display: flex; flex-direction: column; max-height: 90%;
-            position: relative; padding: 20px;
+            min-width: 320px; max-width: 320px; background: var(--card-bg);
+            border-radius: 20px; border: 1px solid var(--border);
+            display: flex; flex-direction: column; max-height: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .card-title { font-family: 'Montserrat'; font-weight: 700; font-size: 0.9rem; }
+
+        .card-header {
+            padding: 20px; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .card-title { font-family: 'Montserrat'; font-weight: 700; color: var(--accent); font-size: 1rem; }
+
+        .task-list { 
+            padding: 15px 20px; overflow-y: auto; flex-grow: 1; 
+        }
         
-        .task-list { overflow-y: auto; flex-grow: 1; margin-bottom: 15px; }
-        .task-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 0.95rem; }
-        .task-item input { width: 18px; height: 18px; accent-color: var(--accent); }
-        .task-item.done { opacity: 0.5; text-decoration: line-through; }
+        .task-item {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+            background: #27272a66; padding: 12px; border-radius: 12px;
+            transition: 0.2s; border: 1px solid transparent;
+        }
+        .task-item:hover { border-color: var(--accent); }
+        .task-item.done { opacity: 0.4; filter: grayscale(1); }
+        .task-item input[type="checkbox"] {
+            width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer;
+        }
 
+        .input-area { padding: 20px; border-top: 1px solid var(--border); }
         .input-box {
-            width: 100%; padding: 12px; border-radius: 10px;
-            border: 1px solid var(--border); background: var(--input);
-            color: var(--text); outline: none;
+            width: 100%; padding: 12px 15px; border-radius: 12px;
+            border: 1px solid var(--border); background: var(--bg);
+            color: var(--text); outline: none; transition: 0.2s;
         }
+        .input-box:focus { border-color: var(--accent); }
 
-        .add-card-btn {
-            min-width: 200px; height: 100px; border: 2px dashed var(--border);
-            border-radius: 16px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-weight: 600; color: var(--border);
+        .add-day-btn {
+            min-width: 320px; height: 150px; border: 2px dashed var(--border);
+            border-radius: 20px; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; cursor: pointer;
+            transition: 0.3s; color: var(--text-dim); gap: 10px;
         }
+        .add-day-btn:hover { border-color: var(--accent); color: var(--accent); background: #8b5cf60a; }
 
-        /* --- NOTLAR --- */
-        #main-note {
-            width: 100%; height: 80%; border-radius: 15px; border: 1px solid var(--border);
-            background: var(--card); color: var(--text); padding: 20px;
-            font-size: 1rem; outline: none; resize: none;
-        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { height: 8px; width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-        /* MOBİL DÜZENLEMELER */
+        /* Mobil */
         @media (max-width: 600px) {
+            main { padding: 15px; gap: 15px; }
             .card { min-width: 85vw; }
-            .view { padding: 15px; }
         }
     </style>
 </head>
-<body data-theme="dark">
-
-    <div id="overlay" onclick="toggleNav()"></div>
-
-    <nav id="side-nav">
-        <h2 style="font-family:'Montserrat'; margin-bottom: 25px;">Menü</h2>
-        <div class="nav-item active" onclick="switchView('tasks')">📅 Görevlerim</div>
-        <div class="nav-item" onclick="switchView('notes')">📝 Genel Notlar</div>
-        <div style="position: absolute; bottom: 30px; font-size: 0.7rem; opacity: 0.5;">v2.8.9 Beta</div>
-    </nav>
+<body>
 
     <header>
-        <div class="logo-area">
-            <h1 onclick="location.reload()">Odak Defteri</h1>
-        </div>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn" onclick="temaDegistir()">🌙</button>
-            <button class="btn" onclick="toggleNav()">☰</button>
-        </div>
+        <div class="logo">ODAK DEFTERİ</div>
+        <div style="font-size: 0.8rem; color: var(--text-dim); font-weight: 600;">v2.9.0 Klasik</div>
     </header>
 
-    <main>
-        <div id="tasks-view" class="view active">
-            <div class="board-container" id="board">
-                </div>
-        </div>
-
-        <div id="notes-view" class="view">
-            <textarea id="main-note" oninput="notuKaydet()" placeholder="Notlarını buraya yaz..."></textarea>
-        </div>
-    </main>
+    <main id="board">
+        </main>
 
     <script>
-        const KEY = 'odak_v289_data';
-        const KEY_NOTE = 'odak_v289_note';
+        const KEY = 'odak_retro_storage';
         let gunler = JSON.parse(localStorage.getItem(KEY)) || [];
 
-        function toggleNav() {
-            document.getElementById('side-nav').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
-        }
-
-        function switchView(view) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById(view + '-view').classList.add('active');
-            event.currentTarget.classList.add('active');
-            toggleNav();
-        }
-
-        function temaDegistir() {
-            const body = document.body;
-            const yeni = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            body.setAttribute('data-theme', yeni);
-        }
-
-        function notuKaydet() {
-            localStorage.setItem(KEY_NOTE, document.getElementById('main-note').value);
+        function kaydet() {
+            localStorage.setItem(KEY, JSON.stringify(gunler));
         }
 
         function ciz() {
@@ -183,7 +127,7 @@
                 card.innerHTML = `
                     <div class="card-header">
                         <span class="card-title">${gun.tarih}</span>
-                        <button onclick="kartSil(${gIdx})" style="background:none; border:none; color:var(--danger); cursor:pointer;">Sil</button>
+                        <button onclick="kartSil(${gIdx})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold;">×</button>
                     </div>
                     <div class="task-list">
                         ${gun.gorevler.map((t, tIdx) => `
@@ -193,45 +137,54 @@
                             </div>
                         `).join('')}
                     </div>
-                    <input type="text" class="input-box" placeholder="Görev ekle..." onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
+                    <div class="input-area">
+                        <input type="text" class="input-box" placeholder="+ Görev ekle..." onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
+                    </div>
                 `;
                 board.appendChild(card);
             });
 
             const addBtn = document.createElement('div');
-            addBtn.className = 'add-card-btn';
-            addBtn.innerHTML = '+ Yeni Gün';
+            addBtn.className = 'add-day-btn';
+            addBtn.innerHTML = `<span style="font-size:2rem;">+</span><span>Yeni Gün Ekle</span>`;
             addBtn.onclick = yeniGun;
             board.appendChild(addBtn);
-
-            localStorage.setItem(KEY, JSON.stringify(gunler));
         }
 
         function yeniGun() {
             const t = new Date(); t.setDate(t.getDate() + gunler.length);
-            const tarihYazi = t.toLocaleDateString('tr-TR', { day:'numeric', month:'short', weekday:'short' });
+            const tarihYazi = t.toLocaleDateString('tr-TR', { day:'numeric', month:'long', weekday:'short' });
             gunler.push({ tarih: tarihYazi, gorevler: [] });
+            kaydet();
             ciz();
+            // En sağa kaydır
+            const m = document.querySelector('main');
+            m.scrollLeft = m.scrollWidth;
         }
 
         function ekle(e, gIdx) {
             if(!e.target.value.trim()) return;
             gunler[gIdx].gorevler.push({ txt: e.target.value, ok: false });
             e.target.value = '';
+            kaydet();
             ciz();
         }
 
         function tamam(gIdx, tIdx) {
             gunler[gIdx].gorevler[tIdx].ok = !gunler[gIdx].gorevler[tIdx].ok;
+            kaydet();
             ciz();
         }
 
         function kartSil(idx) {
-            if(confirm('Silinsin mi?')) { gunler.splice(idx, 1); ciz(); }
+            if(confirm('Bu günü silmek istediğine emin misin?')) {
+                gunler.splice(idx, 1);
+                kaydet();
+                ciz();
+            }
         }
 
-        // Başlangıç
-        document.getElementById('main-note').value = localStorage.getItem(KEY_NOTE) || "";
+        // İlk açılış
         ciz();
     </script>
 </body>
