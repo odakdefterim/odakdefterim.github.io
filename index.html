@@ -24,18 +24,9 @@
             overflow: hidden; background-color: var(--bg);
             color: var(--text); font-family: 'Inter', sans-serif;
             position: relative; transition: background 0.3s;
-            overscroll-behavior-y: contain; /* Pull-to-refresh için tarayıcı varsayılanını kontrol eder */
         }
         body { display: flex; flex-direction: column; }
         
-        /* --- PULL TO REFRESH UI --- */
-        #ptr-indicator {
-            position: absolute; top: -50px; left: 0; width: 100%; height: 50px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.8rem; font-weight: 600; color: var(--accent);
-            transition: transform 0.2s; z-index: 100;
-        }
-
         /* --- SIDEBAR & PANELS --- */
         #sidebar {
             position: fixed; top: 0; left: calc(-1 * var(--side-w)); width: var(--side-w); height: 100%;
@@ -107,6 +98,7 @@
             box-sizing: border-box;
         }
 
+        /* YENİ HOVER EFEKTİ BURADA */
         .card { 
             background: var(--card); 
             padding: 20px; 
@@ -118,9 +110,9 @@
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
-            border-color: var(--accent);
+            transform: translateY(-5px); /* Hafif yukarı kalkma */
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12); /* Daha belirgin gölge */
+            border-color: var(--accent); /* Kenarlık rengi vurgusu */
         }
 
         .task-list { 
@@ -146,6 +138,7 @@
         }
         .silhouette:hover { border-color: var(--accent); color: var(--accent); transform: scale(1.02); }
 
+        /* --- NOTES STYLES --- */
         .note-item {
             background: var(--bg);
             padding: 12px;
@@ -165,6 +158,7 @@
             margin-left: 10px;
             opacity: 0.7;
         }
+        .note-del:hover { opacity: 1; }
 
         @media (max-width: 800px) {
             .board { 
@@ -177,7 +171,7 @@
                 width: 85vw; 
                 height: 400px; 
             }
-            .card:hover { transform: none; }
+            .card:hover { transform: none; } /* Mobilde zıplama yapmasın */
             .board-wrapper { padding: 10px 20px; }
             h1 { font-size: 0.9rem; }
             header { padding: 15px 20px; }
@@ -201,8 +195,6 @@
     </style>
 </head>
 <body data-theme="dark">
-    <div id="ptr-indicator">⬇️ Yenilemek için çek</div>
-
     <div class="overlay" id="overlay" onclick="closeAll()"></div>
     
     <nav id="sidebar">
@@ -222,7 +214,7 @@
         <div id="notes-list" style="margin-top:20px; overflow-y:auto; flex-grow:1; padding-right: 5px;"></div>
     </div>
 
-    <header id="app-header">
+    <header>
         <div class="logo-area">
             <button class="burger" onclick="toggleMenu()">☰</button>
             <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
@@ -241,55 +233,7 @@
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
         let notlar = JSON.parse(localStorage.getItem('odak_notlar_v9')) || [];
         const scrollArea = document.getElementById('scroll-area');
-        const ptrIndicator = document.getElementById('ptr-indicator');
 
-        // --- PULL TO REFRESH LOGIC ---
-        let startY = 0;
-        let pullDistance = 0;
-        const pullThreshold = 80; // Kaç piksel çekince yenilensin?
-
-        window.addEventListener('touchstart', (e) => {
-            // Sadece sayfa en üstteyken veya scrollArea başındayken tetikle
-            if (window.scrollY === 0) {
-                startY = e.touches[0].pageY;
-            }
-        }, { passive: true });
-
-        window.addEventListener('touchmove', (e) => {
-            const currentY = e.touches[0].pageY;
-            pullDistance = currentY - startY;
-
-            if (pullDistance > 0 && window.scrollY === 0) {
-                // Direnç ekleyerek çekme hissi verelim (Math.pow veya bölme ile)
-                const move = Math.min(pullDistance * 0.4, pullThreshold + 20);
-                document.body.style.transform = `translateY(${move}px)`;
-                ptrIndicator.style.transform = `translateY(${move}px)`;
-                
-                if (move > pullThreshold) {
-                    ptrIndicator.innerText = "🔄 Bırak ve Yenile";
-                } else {
-                    ptrIndicator.innerText = "⬇️ Yenilemek için çek";
-                }
-            }
-        }, { passive: true });
-
-        window.addEventListener('touchend', () => {
-            if (pullDistance * 0.4 > pullThreshold) {
-                // Yenileme işlemi
-                ptrIndicator.innerText = "⌛ Yenileniyor...";
-                setTimeout(() => {
-                    location.reload(); // Sayfayı yeniler
-                }, 500);
-            } else {
-                // İptal et ve geri çek
-                document.body.style.transform = `translateY(0)`;
-                ptrIndicator.style.transform = `translateY(0)`;
-            }
-            startY = 0;
-            pullDistance = 0;
-        });
-
-        // --- FONKSİYONLAR ---
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('overlay').classList.toggle('active');
@@ -379,10 +323,8 @@
         }
 
         function kartSil(idx) { 
-            if(confirm("Bu günü silmek istediğinize emin misiniz?")) {
-                gunler.splice(idx, 1); 
-                ciz(); 
-            }
+            gunler.splice(idx, 1); 
+            ciz(); 
         }
 
         function ekle(e, idx) {
