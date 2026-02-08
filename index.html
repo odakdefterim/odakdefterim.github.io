@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Odak Defteri v2.9.8</title>
+    <title>Odak Defteri v3.0</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -209,7 +209,7 @@
         <h2 style="font-family:'Montserrat'; color:var(--accent); margin-bottom:30px; font-size: 1.5rem;">MENU</h2>
         <div class="menu-item" onclick="closeAll()">📅 Günlük Plan</div>
         <div class="menu-item" onclick="openNotes()">📝 Notlarım</div>
-        <div class="menu-item" onclick="alert('Odak Defteri v2.9.8\nKişisel Planlayıcı'); closeAll()">ℹ️ Hakkında</div>
+        <div class="menu-item" onclick="alert('Odak Defteri v3.0\nKişisel Planlayıcı'); closeAll()">ℹ️ Hakkında</div>
     </nav>
 
     <div id="notes-panel">
@@ -226,7 +226,7 @@
         <div class="logo-area">
             <button class="burger" onclick="toggleMenu()">☰</button>
             <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
-            <h1>ODAK DEFTERİ <span style="font-size: 0.7rem; opacity: 0.5;">v2.9.8</span></h1>
+            <h1>ODAK DEFTERİ <span style="font-size: 0.7rem; opacity: 0.5;">v3.0</span></h1>
         </div>
         <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">Karanlık Mod</button>
     </header>
@@ -309,7 +309,7 @@
         scrollArea.addEventListener('wheel', (e) => {
             if (e.deltaY !== 0 && window.innerWidth > 800) {
                 e.preventDefault();
-                scrollArea.scrollLeft += (e.deltaY * 1.5);
+                scrollArea.scrollLeft += (e.deltaY * 0.7);
             }
         }, { passive: false });
 
