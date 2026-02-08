@@ -391,11 +391,11 @@
             }, 50);
         }
 
-        function kartSil(idx) {
-            gunler.splice(idx, 1); 
-            ciz();
-        }
-
+        function kartSil(idx) { 
+            if(confirm("Bu günü silmek istediğinize emin misiniz?")) {
+                gunler.splice(idx, 1); 
+                ciz(); 
+            }
         }
 
         function ekle(e, idx) {
