@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Odak Defteri Beta v2.8.2</title>
+    <title>Odak Defteri Beta v2.8.1</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -11,13 +11,13 @@
             --bg: #f0f2f5; --card: #ffffff; --accent: #0969da; --text: #1f2328; 
             --border: #d0d7de; --danger: #cf222e; --warning: #9a6700; 
             --input: #ffffff; --shadow: 0 6px 16px rgba(0,0,0,0.08);
-            --prog-bg: #e1e4e8; /* Çubuk arka planı */
+            --prog-track: #e1e4e8;
         }
         [data-theme="dark"] {
             --bg: #0d1117; --card: #161b22; --accent: #58a6ff; --text: #c9d1d9; 
             --border: #30363d; --danger: #f85149; --warning: #d29922; 
             --input: #010409; --shadow: none;
-            --prog-bg: #30363d;
+            --prog-track: #30363d;
         }
 
         html, body {
@@ -41,16 +41,15 @@
             text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;
         }
 
-        /* --- SADECE EKLENEN PROGRESS BAR STİLLERİ --- */
+        /* --- PROGRESS BAR CSS --- */
         .progress-track {
-            width: 100%; height: 4px; background: var(--prog-bg);
-            border-radius: 2px; margin: 8px 0; overflow: hidden;
+            width: 100%; height: 6px; background: var(--prog-track);
+            border-radius: 10px; margin: 12px 0; overflow: hidden;
         }
         .progress-bar {
             height: 100%; background: var(--accent);
-            transition: width 0.3s ease; border-radius: 2px;
+            transition: width 0.3s ease; width: 0%;
         }
-        /* ------------------------------------------- */
 
         #ptr-element {
             position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
@@ -79,7 +78,7 @@
         }
 
         .card, .silhouette { 
-            width: 280px; height: 310px; border-radius: 12px; 
+            width: 280px; height: 300px; border-radius: 12px; 
             box-sizing: border-box; flex-shrink: 0; position: relative;
         }
 
@@ -89,7 +88,7 @@
         }
         
         .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
-        .task-list { overflow-y: auto; flex-grow: 1; margin: 10px 0; }
+        .task-list { overflow-y: auto; flex-grow: 1; margin-bottom: 10px; }
         
         .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; word-break: break-word; }
         .priority-high { color: var(--danger); font-weight: 600; }
@@ -115,7 +114,7 @@
             header { padding: 15px 20px; }
             h1 { font-size: 1.1rem; }
             .board { display: flex; flex-direction: row; height: auto; }
-            .card, .silhouette { width: 85vw; height: 330px; margin-right: 15px; }
+            .card, .silhouette { width: 85vw; height: 320px; margin-right: 15px; }
         }
 
         footer { padding: 10px; text-align: center; font-size: 0.75rem; opacity: 0.5; border-top: 1px solid var(--border); }
@@ -128,7 +127,7 @@
     <header>
         <div class="logo-area">
             <img src="logo.png" alt="Logo">
-            <h1>Odak Defteri Beta v2.8.2</h1>
+            <h1>Odak Defteri Beta</h1>
         </div>
         <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">🌙</button>
     </header>
@@ -137,7 +136,7 @@
         <div class="board" id="board"></div>
     </div>
 
-    <footer>Odak Defterim &copy; 2026 | Beta v2.8.2</footer>
+    <footer>Odak Defterim &copy; 2026 | v2.8.2</footer>
 
     <script>
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
@@ -150,34 +149,6 @@
                 scrollArea.scrollLeft += (e.deltaY * 0.8);
             }
         }, { passive: false });
-
-        let touchStart = 0;
-        window.addEventListener('touchstart', e => {
-            if (window.scrollY <= 5) touchStart = e.touches[0].pageY;
-        }, {passive: true});
-
-        window.addEventListener('touchmove', e => {
-            if (touchStart === 0) return;
-            const diff = e.touches[0].pageY - touchStart;
-            if (diff > 0 && diff < 150) {
-                ptr.style.opacity = "1";
-                const move = Math.min(diff / 1.5, 70);
-                ptr.style.transform = `translateX(-50%) translateY(${move}px) rotate(${diff * 2}deg)`;
-            }
-        }, {passive: true});
-
-        window.addEventListener('touchend', e => {
-            const diff = e.changedTouches[0].pageY - touchStart;
-            if (touchStart !== 0 && diff > 100) {
-                ptr.classList.add('ptr-refreshing');
-                ptr.style.transform = `translateX(-50%) translateY(70px)`;
-                setTimeout(() => location.reload(), 800);
-            } else {
-                ptr.style.opacity = "0";
-                ptr.style.transform = `translateX(-50%) translateY(0)`;
-            }
-            touchStart = 0;
-        }, {passive: true});
 
         function temaSet(tema) {
             document.body.setAttribute('data-theme', tema);
@@ -254,10 +225,11 @@
             ciz();
         }
 
-        // SENİN İSTEDİĞİN GİBİ: ONAYSIZ SİLME
         function kartSil(idx) {
-            gunler.splice(idx, 1); 
-            ciz();
+            if(confirm('Bu günü silmek istediğine emin misin?')) {
+                gunler.splice(idx, 1); 
+                ciz();
+            }
         }
 
         function ekle(e, idx) {
