@@ -24,16 +24,44 @@
             overflow: hidden; background-color: var(--bg);
             color: var(--text); font-family: 'Inter', sans-serif;
             position: relative; transition: background 0.3s;
-            overscroll-behavior-y: contain; /* Pull-to-refresh için tarayıcı varsayılanını kontrol eder */
+            overscroll-behavior-y: contain;
         }
         body { display: flex; flex-direction: column; }
         
-        /* --- PULL TO REFRESH UI --- */
+        /* --- YUVARLAK OK REFRESH UI --- */
         #ptr-indicator {
-            position: absolute; top: -50px; left: 0; width: 100%; height: 50px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.8rem; font-weight: 600; color: var(--accent);
-            transition: transform 0.2s; z-index: 100;
+            position: fixed;
+            top: -60px; /* Ekranın dışında başla */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 45px;
+            height: 45px;
+            background: var(--card);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 10001;
+            transition: top 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--border);
+        }
+
+        #ptr-icon {
+            font-size: 24px;
+            color: var(--accent);
+            display: inline-block;
+            line-height: 1;
+            font-weight: bold;
+            transition: transform 0.1s linear;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .refreshing #ptr-icon {
+            animation: spin 0.8s linear infinite;
         }
 
         /* --- SIDEBAR & PANELS --- */
@@ -65,7 +93,6 @@
         }
         .menu-item:hover { background: var(--bg); color: var(--accent); }
 
-        /* --- HEADER --- */
         header { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; flex-shrink: 0; }
         .logo-area { display: flex; align-items: center; gap: 15px; }
         .burger { font-size: 1.6rem; cursor: pointer; background: none; border: none; color: var(--text); padding: 0; }
@@ -79,7 +106,6 @@
             text-transform: uppercase; font-weight: 600;
         }
 
-        /* --- BOARD --- */
         .board-wrapper { 
             flex-grow: 1; 
             overflow-x: auto; 
@@ -147,36 +173,17 @@
         .silhouette:hover { border-color: var(--accent); color: var(--accent); transform: scale(1.02); }
 
         .note-item {
-            background: var(--bg);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-size: 0.85rem;
-            position: relative;
-            border-left: 4px solid var(--accent);
-            word-wrap: break-word;
+            background: var(--bg); padding: 12px; border-radius: 8px; margin-bottom: 10px;
+            font-size: 0.85rem; position: relative; border-left: 4px solid var(--accent); word-wrap: break-word;
         }
         .note-del {
-            float: right;
-            color: var(--danger);
-            font-size: 0.7rem;
-            cursor: pointer;
-            font-weight: bold;
-            margin-left: 10px;
-            opacity: 0.7;
+            float: right; color: var(--danger); font-size: 0.7rem; cursor: pointer;
+            font-weight: bold; margin-left: 10px; opacity: 0.7;
         }
 
         @media (max-width: 800px) {
-            .board { 
-                display: flex; 
-                flex-direction: row; 
-                gap: 15px;
-                padding-bottom: 20px;
-            }
-            .card, .silhouette { 
-                width: 85vw; 
-                height: 400px; 
-            }
+            .board { display: flex; flex-direction: row; gap: 15px; padding-bottom: 20px; }
+            .card, .silhouette { width: 85vw; height: 400px; }
             .card:hover { transform: none; }
             .board-wrapper { padding: 10px 20px; }
             h1 { font-size: 0.9rem; }
@@ -201,7 +208,9 @@
     </style>
 </head>
 <body data-theme="dark">
-    <div id="ptr-indicator">⬇️ Yenilemek için çek</div>
+    <div id="ptr-indicator">
+        <span id="ptr-icon">↻</span>
+    </div>
 
     <div class="overlay" id="overlay" onclick="closeAll()"></div>
     
@@ -241,15 +250,15 @@
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
         let notlar = JSON.parse(localStorage.getItem('odak_notlar_v9')) || [];
         const scrollArea = document.getElementById('scroll-area');
-        const ptrIndicator = document.getElementById('ptr-indicator');
-
+        
         // --- PULL TO REFRESH LOGIC ---
+        const ptr = document.getElementById('ptr-indicator');
+        const ptrIcon = document.getElementById('ptr-icon');
         let startY = 0;
         let pullDistance = 0;
-        const pullThreshold = 80; // Kaç piksel çekince yenilensin?
+        const pullThreshold = 100;
 
         window.addEventListener('touchstart', (e) => {
-            // Sadece sayfa en üstteyken veya scrollArea başındayken tetikle
             if (window.scrollY === 0) {
                 startY = e.touches[0].pageY;
             }
@@ -260,36 +269,40 @@
             pullDistance = currentY - startY;
 
             if (pullDistance > 0 && window.scrollY === 0) {
-                // Direnç ekleyerek çekme hissi verelim (Math.pow veya bölme ile)
-                const move = Math.min(pullDistance * 0.4, pullThreshold + 20);
-                document.body.style.transform = `translateY(${move}px)`;
-                ptrIndicator.style.transform = `translateY(${move}px)`;
+                const move = Math.min(pullDistance * 0.4, 130);
+                ptr.style.top = (move - 60) + 'px'; // Yukarıdan aşağı indir
                 
+                // Oku kendi ekseninde döndür
+                const rotation = move * 4;
+                ptrIcon.style.transform = `rotate(${rotation}deg)`;
+                
+                // Eşik geçilince rengi vurgula
                 if (move > pullThreshold) {
-                    ptrIndicator.innerText = "🔄 Bırak ve Yenile";
+                    ptrIcon.style.color = 'var(--danger)';
                 } else {
-                    ptrIndicator.innerText = "⬇️ Yenilemek için çek";
+                    ptrIcon.style.color = 'var(--accent)';
                 }
             }
         }, { passive: true });
 
         window.addEventListener('touchend', () => {
             if (pullDistance * 0.4 > pullThreshold) {
-                // Yenileme işlemi
-                ptrIndicator.innerText = "⌛ Yenileniyor...";
+                // Yenileme işlemi tetiklendi
+                ptr.classList.add('refreshing');
+                ptr.style.top = '25px';
                 setTimeout(() => {
-                    location.reload(); // Sayfayı yeniler
-                }, 500);
+                    location.reload();
+                }, 800);
             } else {
-                // İptal et ve geri çek
-                document.body.style.transform = `translateY(0)`;
-                ptrIndicator.style.transform = `translateY(0)`;
+                // İptal: Göstergeyi geri sakla
+                ptr.style.top = '-60px';
+                ptrIcon.style.transform = 'rotate(0deg)';
             }
             startY = 0;
             pullDistance = 0;
         });
 
-        // --- FONKSİYONLAR ---
+        // --- DİĞER FONKSİYONLAR ---
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('overlay').classList.toggle('active');
@@ -378,11 +391,11 @@
             }, 50);
         }
 
-        function kartSil(idx) { 
-            if(confirm("Bu günü silmek istediğinize emin misiniz?")) {
-                gunler.splice(idx, 1); 
-                ciz(); 
-            }
+        function kartSil(idx) {
+            gunler.splice(idx, 1); 
+            ciz();
+        }
+
         }
 
         function ekle(e, idx) {
