@@ -11,7 +11,7 @@
             --bg: #f0f2f5; --card: #ffffff; --accent: #0969da; --text: #1f2328; 
             --border: #d0d7de; --danger: #cf222e; --warning: #9a6700; 
             --input: #ffffff; --shadow: 0 6px 16px rgba(0,0,0,0.08);
-            --prog-bg: #e1e4e8;
+            --prog-bg: #e1e4e8; /* Çubuk arka planı */
         }
         [data-theme="dark"] {
             --bg: #0d1117; --card: #161b22; --accent: #58a6ff; --text: #c9d1d9; 
@@ -41,7 +41,7 @@
             text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;
         }
 
-        /* --- PROGRESS BAR --- */
+        /* --- SADECE EKLENEN PROGRESS BAR STİLLERİ --- */
         .progress-track {
             width: 100%; height: 4px; background: var(--prog-bg);
             border-radius: 2px; margin: 8px 0; overflow: hidden;
@@ -50,6 +50,7 @@
             height: 100%; background: var(--accent);
             transition: width 0.3s ease; border-radius: 2px;
         }
+        /* ------------------------------------------- */
 
         #ptr-element {
             position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
@@ -253,6 +254,7 @@
             ciz();
         }
 
+        // SENİN İSTEDİĞİN GİBİ: ONAYSIZ SİLME
         function kartSil(idx) {
             gunler.splice(idx, 1); 
             ciz();
