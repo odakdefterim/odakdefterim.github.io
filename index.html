@@ -117,7 +117,7 @@
         scrollArea.addEventListener('wheel', function(e) {
             if (e.deltaY !== 0) {
                 e.preventDefault();
-                scrollArea.scrollLeft += (e.deltaY * 1.0);
+                scrollArea.scrollLeft += (e.deltaY * 0.8);
             }
         }, { passive: false });
 
