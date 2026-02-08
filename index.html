@@ -10,13 +10,13 @@
         :root {
             --bg: #f0f2f5; --card: #ffffff; --accent: #0969da; --text: #1f2328; 
             --border: #d0d7de; --danger: #cf222e; --warning: #9a6700; 
-            --input: #ffffff; --shadow: 0 6px 16px rgba(0,0,0,0.08);
+            --input: #ffffff; --shadow: 0 4px 12px rgba(0,0,0,0.05);
             --side-w: 280px;
         }
         [data-theme="dark"] {
             --bg: #0d1117; --card: #161b22; --accent: #58a6ff; --text: #c9d1d9; 
             --border: #30363d; --danger: #f85149; --warning: #d29922; 
-            --input: #010409; --shadow: none;
+            --input: #010409; --shadow: 0 8px 24px rgba(0,0,0,0.2);
         }
 
         html, body {
@@ -98,6 +98,7 @@
             box-sizing: border-box;
         }
 
+        /* YENİ HOVER EFEKTİ BURADA */
         .card { 
             background: var(--card); 
             padding: 20px; 
@@ -105,6 +106,13 @@
             display: flex; 
             flex-direction: column; 
             box-shadow: var(--shadow); 
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px); /* Hafif yukarı kalkma */
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12); /* Daha belirgin gölge */
+            border-color: var(--accent); /* Kenarlık rengi vurgusu */
         }
 
         .task-list { 
@@ -128,7 +136,7 @@
             background: transparent;
             transition: 0.2s;
         }
-        .silhouette:hover { border-color: var(--accent); color: var(--accent); }
+        .silhouette:hover { border-color: var(--accent); color: var(--accent); transform: scale(1.02); }
 
         /* --- NOTES STYLES --- */
         .note-item {
@@ -163,12 +171,13 @@
                 width: 85vw; 
                 height: 400px; 
             }
+            .card:hover { transform: none; } /* Mobilde zıplama yapmasın */
             .board-wrapper { padding: 10px 20px; }
             h1 { font-size: 0.9rem; }
             header { padding: 15px 20px; }
         }
 
-        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; line-height: 1; }
+        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; line-height: 1; z-index: 10; }
         .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; word-break: break-word; gap: 8px; }
         .priority-high { color: var(--danger); font-weight: 600; }
         .priority-medium { color: var(--warning); font-weight: 500; }
@@ -314,7 +323,6 @@
         }
 
         function kartSil(idx) { 
-            // Onay penceresi kaldırıldı
             gunler.splice(idx, 1); 
             ciz(); 
         }
@@ -353,7 +361,6 @@
         }
 
         function deleteNote(idx) { 
-            // Onay penceresi kaldırıldı
             notlar.splice(idx, 1); 
             localStorage.setItem('odak_notlar_v9', JSON.stringify(notlar)); 
             drawNotes(); 
