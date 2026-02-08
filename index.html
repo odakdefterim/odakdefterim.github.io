@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Odak Defteri Beta v2.8.1</title>
+    <title>Odak Defteri Beta v2.8.2</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -117,7 +126,7 @@
     <header>
         <div class="logo-area">
             <img src="logo.png" alt="Logo">
-            <h1>Odak Defteri Beta v2.8.1</h1>
+            <h1>Odak Defteri Beta v2.8.2</h1>
         </div>
         <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">Karanlık Mod</button>
     </header>
@@ -126,7 +135,7 @@
         <div class="board" id="board"></div>
     </div>
 
-    <footer>Odak Defterim &copy; 2026 | Beta v2.8.1</footer>
+    <footer>Odak Defterim &copy; 2026 | Beta v2.8.2</footer>
 
     <script>
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
