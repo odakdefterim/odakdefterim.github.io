@@ -28,45 +28,26 @@
         }
         body { display: flex; flex-direction: column; }
         
-        /* --- YUVARLAK SIMETRIK REFRESH UI --- */
         #ptr-indicator {
-            position: fixed;
-            top: -65px; 
-            left: 50%;
-            transform: translateX(-50%);
-            width: 45px;
-            height: 45px;
-            background: var(--card);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            z-index: 10001;
+            position: fixed; top: -65px; left: 50%;
+            transform: translateX(-50%); width: 45px; height: 45px;
+            background: var(--card); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 10001;
             transition: top 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: 1px solid var(--border);
         }
 
         #ptr-icon {
-            width: 24px;
-            height: 24px;
-            border: 3px solid var(--border);
-            border-top: 3px solid var(--accent);
-            border-radius: 50%;
-            display: inline-block;
-            box-sizing: border-box;
+            width: 24px; height: 24px; border: 3px solid var(--border);
+            border-top: 3px solid var(--accent); border-radius: 50%;
+            display: inline-block; box-sizing: border-box;
             transition: transform 0.1s linear;
         }
 
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .refreshing #ptr-icon {
-            animation: spin 0.8s linear infinite !important;
-        }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .refreshing #ptr-icon { animation: spin 0.8s linear infinite !important; }
 
-        /* --- SIDEBAR & PANELS --- */
         #sidebar {
             position: fixed; top: 0; left: calc(-1 * var(--side-w)); width: var(--side-w); height: 100%;
             background: var(--card); border-right: 1px solid var(--border); z-index: 9999;
@@ -98,7 +79,6 @@
         header { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; flex-shrink: 0; }
         .logo-area { display: flex; align-items: center; gap: 15px; }
         .burger { font-size: 1.6rem; cursor: pointer; background: none; border: none; color: var(--text); padding: 0; }
-        header img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
         h1 { font-family: 'Montserrat'; font-size: 1.1rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
 
         .theme-toggle {
@@ -108,135 +88,63 @@
             text-transform: uppercase; font-weight: 600;
         }
 
-        .board-wrapper { 
-            flex-grow: 1; 
-            overflow-x: auto; 
-            overflow-y: hidden; 
-            display: flex; 
-            align-items: center; 
-            padding: 20px 40px; 
-            -webkit-overflow-scrolling: touch; 
-        }
-        
-        .board { 
-            display: grid; 
-            grid-template-rows: repeat(2, 340px); 
-            grid-auto-flow: column; 
-            gap: 25px; 
-            align-items: start;
-        }
+        .board-wrapper { flex-grow: 1; overflow-x: auto; overflow-y: hidden; display: flex; align-items: center; padding: 20px 40px; -webkit-overflow-scrolling: touch; }
+        .board { display: grid; grid-template-rows: repeat(2, 340px); grid-auto-flow: column; gap: 25px; align-items: start; }
 
-        .card, .silhouette { 
-            width: 280px; 
-            height: 320px; 
-            border-radius: 12px; 
-            flex-shrink: 0; 
-            position: relative; 
-            box-sizing: border-box;
-        }
+        .card, .silhouette { width: 280px; height: 320px; border-radius: 12px; flex-shrink: 0; position: relative; box-sizing: border-box; }
+        .card { background: var(--card); padding: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: var(--shadow); transition: 0.2s; }
+        .card:hover { transform: translateY(-5px); border-color: var(--accent); }
 
-        .card { 
-            background: var(--card); 
-            padding: 20px; 
-            border: 1px solid var(--border); 
-            display: flex; 
-            flex-direction: column; 
-            box-shadow: var(--shadow); 
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
-            border-color: var(--accent);
-        }
-
-        .task-list { 
-            overflow-y: auto; 
-            flex-grow: 1; 
-            margin: 10px 0; 
-            padding-right: 5px;
-        }
-        
+        .task-list { overflow-y: auto; flex-grow: 1; margin: 10px 0; padding-right: 5px; }
         .task-list::-webkit-scrollbar { width: 4px; }
         .task-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-        .silhouette { 
-            border: 2px dashed var(--border); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer; 
-            color: var(--border); 
-            font-size: 1.1rem; 
-            background: transparent;
-            transition: 0.2s;
-        }
+        .silhouette { border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--border); background: transparent; transition: 0.2s; }
         .silhouette:hover { border-color: var(--accent); color: var(--accent); transform: scale(1.02); }
 
-        .note-item {
-            background: var(--bg); padding: 12px; border-radius: 8px; margin-bottom: 10px;
-            font-size: 0.85rem; position: relative; border-left: 4px solid var(--accent); word-wrap: break-word;
-        }
-        .note-del {
-            float: right; color: var(--danger); font-size: 0.7rem; cursor: pointer;
-            font-weight: bold; margin-left: 10px; opacity: 0.7;
-        }
+        .note-item { background: var(--bg); padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 0.85rem; position: relative; border-left: 4px solid var(--accent); word-wrap: break-word; }
+        .note-del { float: right; color: var(--danger); font-size: 0.7rem; cursor: pointer; font-weight: bold; opacity: 0.7; }
 
         @media (max-width: 800px) {
-            .board { display: flex; flex-direction: row; gap: 15px; padding-bottom: 20px; }
+            .board { display: flex; flex-direction: row; gap: 15px; }
             .card, .silhouette { width: 85vw; height: 400px; }
-            .card:hover { transform: none; }
-            .board-wrapper { padding: 10px 20px; }
-            h1 { font-size: 0.9rem; }
             header { padding: 15px 20px; }
         }
 
-        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; line-height: 1; z-index: 10; }
-        .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; word-break: break-word; gap: 8px; }
+        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; z-index: 10; }
+        .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; gap: 8px; }
         .priority-high { color: var(--danger); font-weight: 600; }
         .priority-medium { color: var(--warning); font-weight: 500; }
-        .priority-low { color: var(--accent); }
-        .done { text-decoration: line-through; opacity: 0.4 !important; color: #8b949e !important; }
+        .done { text-decoration: line-through; opacity: 0.4 !important; }
         
-        .input-box { 
-            background: var(--input); border: 1px solid var(--border); color: var(--text); 
-            padding: 10px; border-radius: 8px; width: 100%; outline: none; 
-            font-size: 0.85rem; box-sizing: border-box; transition: 0.2s;
-        }
-        .input-box:focus { border-color: var(--accent); }
-        .info-note { font-size: 9px; opacity: 0.6; margin-bottom: 5px; font-style: italic; display: flex; justify-content: space-between; }
-        footer { padding: 10px; text-align: center; font-size: 0.7rem; opacity: 0.5; border-top: 1px solid var(--border); flex-shrink: 0; }
+        .input-box { background: var(--input); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; width: 100%; outline: none; font-size: 0.85rem; box-sizing: border-box; }
+        .info-note { font-size: 9px; opacity: 0.6; margin-bottom: 5px; display: flex; justify-content: space-between; }
+        footer { padding: 10px; text-align: center; font-size: 0.7rem; opacity: 0.5; border-top: 1px solid var(--border); }
     </style>
 </head>
 <body data-theme="dark">
-    <div id="ptr-indicator">
-        <span id="ptr-icon"></span>
-    </div>
-
+    <div id="ptr-indicator"><span id="ptr-icon"></span></div>
     <div class="overlay" id="overlay" onclick="closeAll()"></div>
     
     <nav id="sidebar">
-        <h2 style="font-family:'Montserrat'; color:var(--accent); margin-bottom:30px; font-size: 1.5rem;">MENU</h2>
-        <div class="menu-item" onclick="closeAll()">📅 Günlük Plan</div>
-        <div class="menu-item" onclick="openNotes()">📝 Notlarım</div>
-        <div class="menu-item" onclick="alert('Odak Defteri v2.9.8\nKişisel Planlayıcı'); closeAll()">ℹ️ Hakkında</div>
+        <h2 style="font-family:'Montserrat'; color:var(--accent); margin-bottom:30px;">MENU</h2>
+        <div class="menu-item" onclick="closeAll()"> Günlük Plan</div>
+        <div class="menu-item" onclick="openNotes()"> Notlarım</div>
     </nav>
 
     <div id="notes-panel">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h3 style="font-family:'Montserrat'; margin:0; font-size:1.1rem;">GENEL NOTLAR</h3>
-            <span onclick="closeAll()" style="cursor:pointer; font-size:1.5rem; line-height: 1;">&times;</span>
+            <h3 style="font-family:'Montserrat'; margin:0;">GENEL NOTLAR</h3>
+            <span onclick="closeAll()" style="cursor:pointer; font-size:1.5rem;">&times;</span>
         </div>
-        <textarea id="note-input" class="input-box" style="height: 100px; margin-bottom:10px; resize: none;" placeholder="Kalıcı bir not ekle..."></textarea>
-        <button onclick="saveNote()" style="background:var(--accent); color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:600; width:100%;">Ekle</button>
-        <div id="notes-list" style="margin-top:20px; overflow-y:auto; flex-grow:1; padding-right: 5px;"></div>
+        <textarea id="note-input" class="input-box" style="height: 100px; margin-bottom:10px; resize: none;" placeholder="Not ekle..."></textarea>
+        <button onclick="saveNote()" style="background:var(--accent); color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; width:100%;">Ekle</button>
+        <div id="notes-list" style="margin-top:20px; overflow-y:auto; flex-grow:1;"></div>
     </div>
 
-    <header id="app-header">
+    <header>
         <div class="logo-area">
             <button class="burger" onclick="toggleMenu()">☰</button>
-            <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
             <h1>ODAK DEFTERİ <span style="font-size: 0.7rem; opacity: 0.5;">v2.9.8</span></h1>
         </div>
         <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">Karanlık Mod</button>
@@ -246,107 +154,55 @@
         <div class="board" id="board"></div>
     </div>
 
-    <footer>Odak Defterim &copy; 2026 | Tüm notlar yerel hafızadadır.</footer>
+    <footer>Odak Defterim &copy; 2026</footer>
 
     <script>
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
         let notlar = JSON.parse(localStorage.getItem('odak_notlar_v9')) || [];
         const scrollArea = document.getElementById('scroll-area');
         
-        // --- PULL TO REFRESH LOGIC (GÜNCELLENDİ) ---
+        // PTR Mantığı
         const ptr = document.getElementById('ptr-indicator');
         const ptrIcon = document.getElementById('ptr-icon');
-        let startY = 0;
-        let pullDistance = 0;
-        const pullThreshold = 85; // Daha hassas ve makul bir eşik
+        let startY = 0; let pullDistance = 0;
 
-        window.addEventListener('touchstart', (e) => {
-            if (window.scrollY === 0) {
-                startY = e.touches[0].pageY;
-            }
-        }, { passive: true });
-
+        window.addEventListener('touchstart', (e) => { if (window.scrollY === 0) startY = e.touches[0].pageY; }, { passive: true });
         window.addEventListener('touchmove', (e) => {
             const currentY = e.touches[0].pageY;
             pullDistance = currentY - startY;
-
             if (pullDistance > 0 && window.scrollY === 0) {
-                // Direnç katsayısını 0.35'e düşürdük (daha ağır/kontrollü iniş)
                 const move = Math.min(pullDistance * 0.35, 110);
-                ptr.style.top = (move - 65) + 'px'; 
-                
-                // Simetrik halkayı çekme miktarına göre döndür
-                const rotation = move * 5;
-                ptrIcon.style.transform = `rotate(${rotation}deg)`;
-                
-                // Eşik geçilince renk geri bildirimi
-                if (move > pullThreshold) {
-                    ptrIcon.style.borderTopColor = 'var(--danger)';
-                } else {
-                    ptrIcon.style.borderTopColor = 'var(--accent)';
-                }
+                ptr.style.top = (move - 65) + 'px';
+                ptrIcon.style.transform = `rotate(${move * 5}deg)`;
             }
         }, { passive: true });
 
         window.addEventListener('touchend', () => {
-            const finalMove = Math.min(pullDistance * 0.35, 110);
-            if (finalMove > pullThreshold) {
-                ptr.classList.add('refreshing');
-                ptr.style.top = '20px';
-                setTimeout(() => {
-                    location.reload();
-                }, 800);
-            } else {
-                ptr.style.top = '-65px';
-                ptrIcon.style.transform = 'rotate(0deg)';
-            }
-            startY = 0;
+            if (Math.min(pullDistance * 0.35, 110) > 85) {
+                ptr.classList.add('refreshing'); ptr.style.top = '20px';
+                setTimeout(() => location.reload(), 800);
+            } else { ptr.style.top = '-65px'; }
             pullDistance = 0;
         });
 
-        // --- DİĞER FONKSİYONLAR ---
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('active');
-        }
-        function openNotes() {
-            closeAll();
-            document.getElementById('notes-panel').classList.add('open');
-            document.getElementById('overlay').classList.add('active');
-            drawNotes();
-        }
-        function closeAll() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('notes-panel').classList.remove('open');
-            document.getElementById('overlay').classList.remove('active');
-        }
-
-        scrollArea.addEventListener('wheel', (e) => {
-            if (e.deltaY !== 0 && window.innerWidth > 800) {
-                e.preventDefault();
-                scrollArea.scrollLeft += (e.deltaY * 1.5);
-            }
-        }, { passive: false });
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('active'); }
+        function openNotes() { closeAll(); document.getElementById('notes-panel').classList.add('open'); document.getElementById('overlay').classList.add('active'); drawNotes(); }
+        function closeAll() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('notes-panel').classList.remove('open'); document.getElementById('overlay').classList.remove('active'); }
 
         function temaSet(tema) {
             document.body.setAttribute('data-theme', tema);
             localStorage.setItem('tema', tema);
             document.getElementById('theme-btn').innerText = tema === 'dark' ? '🌙 MOD' : '☀️ MOD';
         }
-        function temaDegistir() { 
-            const current = document.body.getAttribute('data-theme');
-            temaSet(current === 'dark' ? 'light' : 'dark'); 
-        }
+        function temaDegistir() { temaSet(document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
         temaSet(localStorage.getItem('tema') || 'dark');
 
         function ciz() {
             const board = document.getElementById('board');
             board.innerHTML = '';
-            
             gunler.forEach((gun, gIdx) => {
                 const bitti = gun.gorevler.filter(t => t.ok).length;
                 const oran = gun.gorevler.length === 0 ? 0 : Math.round((bitti / gun.gorevler.length) * 100);
-                
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
@@ -357,69 +213,51 @@
                     </div>
                     <div class="task-list">
                         ${gun.gorevler.map((t, tIdx) => {
-                            let pClass = "priority-low"; let cleanText = t.txt;
-                            if(t.txt.startsWith('!')) { pClass = "priority-high"; cleanText = t.txt.substring(1); }
-                            else if(t.txt.startsWith('?')) { pClass = "priority-medium"; cleanText = t.txt.substring(1); }
+                            let pClass = ""; if(t.txt.startsWith('!')) pClass="priority-high"; else if(t.txt.startsWith('?')) pClass="priority-medium";
                             return `<div class="task-item ${t.ok ? 'done' : pClass}">
                                 <input type="checkbox" ${t.ok ? 'checked' : ''} onchange="tamam(${gIdx},${tIdx})">
-                                <span>${cleanText}</span>
+                                <span>${t.txt.replace(/^[!?]/, '')}</span>
                             </div>`;
                         }).join('')}
                     </div>
                     <div class="info-note"><span>! Acil, ? Bekle</span><span>${gun.gorevler.length}/50</span></div>
-                    <input type="text" class="input-box" placeholder="Görev oluştur..." maxlength="50" 
-                           onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
+                    <input type="text" class="input-box" placeholder="Görev..." onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
                 `;
                 board.appendChild(card);
             });
-
             const siluet = document.createElement('div');
-            siluet.className = 'silhouette';
-            siluet.onclick = yeniGun;
+            siluet.className = 'silhouette'; siluet.onclick = yeniGun;
             siluet.innerHTML = `<span>+ Yeni Gün</span>`;
             board.appendChild(siluet);
-            
             localStorage.setItem('ajanda_v8', JSON.stringify(gunler));
         }
 
         function yeniGun() {
-            const bugun = new Date();
-            bugun.setDate(bugun.getDate() + gunler.length);
+            const bugun = new Date(); bugun.setDate(bugun.getDate() + gunler.length);
             const yazi = bugun.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', weekday: 'short' });
             gunler.push({ tarih: yazi, gorevler: [] });
             ciz();
-            setTimeout(() => { 
-                scrollArea.scrollTo({ left: scrollArea.scrollWidth, behavior: 'smooth' }); 
-            }, 50);
+            setTimeout(() => scrollArea.scrollTo({ left: scrollArea.scrollWidth, behavior: 'smooth' }), 50);
         }
 
         function kartSil(idx) { 
-            if(confirm("Bu günü silmek istediğinize emin misiniz?")) {
-                gunler.splice(idx, 1); 
-                ciz(); 
-            }
-        }
-
-        function ekle(e, idx) {
-            const yazi = e.target.value.trim();
-            if(!yazi) return;
-            if(gunler[idx].gorevler.length >= 50) return alert("Maksimum görev sınırı!");
-            gunler[idx].gorevler.push({ txt: yazi, ok: false });
-            e.target.value = "";
-            ciz();
-        }
-
-        function tamam(gIdx, tIdx) { 
-            gunler[gIdx].gorevler[tIdx].ok = !gunler[gIdx].gorevler[tIdx].ok; 
+            gunler.splice(idx, 1); 
             ciz(); 
         }
 
+        function ekle(e, idx) {
+            const val = e.target.value.trim();
+            if(!val) return;
+            gunler[idx].gorevler.push({ txt: val, ok: false });
+            e.target.value = ""; ciz();
+        }
+
+        function tamam(gIdx, tIdx) { gunler[gIdx].gorevler[tIdx].ok = !gunler[gIdx].gorevler[tIdx].ok; ciz(); }
         function saveNote() {
             const inp = document.getElementById('note-input');
             if(!inp.value.trim()) return;
             notlar.unshift({ text: inp.value, id: Date.now() });
-            inp.value = "";
-            drawNotes();
+            inp.value = ""; drawNotes();
             localStorage.setItem('odak_notlar_v9', JSON.stringify(notlar));
         }
 
