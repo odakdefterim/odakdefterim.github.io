@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Odak Defteri Beta v2.9.2</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Odak Defteri Stable v2.9.5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #f0f2f5; --card: #ffffff; --accent: #0969da; --text: #1f2328; 
             --border: #d0d7de; --danger: #cf222e; --warning: #9a6700; 
             --input: #ffffff; --shadow: 0 6px 16px rgba(0,0,0,0.08);
-            --sidebar-w: 280px;
+            --side-w: 260px;
         }
         [data-theme="dark"] {
             --bg: #0d1117; --card: #161b22; --accent: #58a6ff; --text: #c9d1d9; 
@@ -18,79 +18,73 @@
             --input: #010409; --shadow: none;
         }
 
-        html, body {
-            margin: 0; padding: 0; height: 100vh; width: 100vw;
-            overflow: hidden; background-color: var(--bg);
-            color: var(--text); font-family: 'Inter', sans-serif;
-            position: relative;
-        }
-        body { display: flex; flex-direction: column; }
+        * { box-sizing: border-box; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; }
         
+        /* --- SIDEBAR & OVERLAY --- */
+        #sidebar {
+            position: fixed; top: 0; left: calc(-1 * var(--side-w)); width: var(--side-w); height: 100%;
+            background: var(--card); border-right: 1px solid var(--border); z-index: 9999;
+            transition: transform 0.3s ease; padding: 30px 20px;
+        }
+        #sidebar.open { transform: translateX(var(--side-w)); }
+        
+        .overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 9000;
+            opacity: 0; visibility: hidden; transition: 0.3s; backdrop-filter: blur(2px);
+        }
+        .overlay.active { opacity: 1; visibility: visible; }
+
+        .menu-item {
+            padding: 12px 15px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px;
+            font-weight: 500; transition: 0.2s; margin-bottom: 5px;
+        }
+        .menu-item:hover { background: var(--bg); color: var(--accent); }
+
         /* --- HEADER --- */
         header { 
             display: flex; align-items: center; justify-content: space-between; 
-            padding: 15px 30px; flex-shrink: 0; background: var(--card);
-            border-bottom: 1px solid var(--border);
+            padding: 15px 30px; height: 70px; flex-shrink: 0; z-index: 1000;
         }
-        .logo-area { display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        h1 { font-family: 'Montserrat'; font-size: 1.2rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
-        
-        .menu-trigger {
-            background: none; border: none; color: var(--text);
-            font-size: 1.5rem; cursor: pointer; padding: 5px;
-            display: flex; align-items: center; justify-content: center;
-        }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .burger { font-size: 1.5rem; cursor: pointer; background: none; border: none; color: var(--text); }
+        h1 { font-family: 'Montserrat'; font-size: 1.2rem; margin: 0; letter-spacing: -0.5px; }
 
-        /* --- SOL MENÜ (SIDEBAR) --- */
-        #sidebar {
-            position: fixed; top: 0; left: calc(-1 * var(--sidebar-w)); 
-            width: var(--sidebar-w); height: 100%;
-            background: var(--card); border-right: 1px solid var(--border);
-            z-index: 3000; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 30px 20px; box-shadow: 10px 0 30px rgba(0,0,0,0.1);
-        }
-        #sidebar.open { transform: translateX(var(--sidebar-w)); }
-
-        .sidebar-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-            opacity: 0; visibility: hidden; transition: 0.3s; z-index: 2500;
-            backdrop-filter: blur(2px);
-        }
-        .sidebar-overlay.active { opacity: 1; visibility: visible; }
-
-        .nav-link {
-            padding: 14px 18px; border-radius: 10px; margin-bottom: 8px;
-            cursor: pointer; display: flex; align-items: center; gap: 12px;
-            font-weight: 500; transition: 0.2s; color: var(--text);
-        }
-        .nav-link:hover { background: var(--bg); color: var(--accent); }
-        .nav-link.active { background: var(--accent); color: white; }
-
-        /* --- BOARD YAPISI --- */
+        /* --- BOARD (v2.8.1 Orijinal Yapısı) --- */
         .board-wrapper { 
-            flex-grow: 1; overflow-x: auto; overflow-y: hidden; 
+            height: calc(100% - 70px); overflow-x: auto; overflow-y: hidden; 
             display: flex; align-items: center; padding: 0 40px;
             -webkit-overflow-scrolling: touch;
         }
         .board { 
             display: grid; grid-template-rows: repeat(2, 290px); 
-            grid-auto-flow: column; gap: 20px; height: 85%; align-items: start;
+            grid-auto-flow: column; gap: 20px; align-items: start;
         }
 
-        .card, .silhouette { width: 280px; height: 300px; border-radius: 12px; flex-shrink: 0; position: relative; }
+        .card, .silhouette { width: 280px; height: 300px; border-radius: 12px; position: relative; }
         .card { background: var(--card); padding: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: var(--shadow); }
-        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
-        .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; }
-        .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; word-break: break-word; }
+        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; cursor: pointer; font-size: 1.2rem; }
+        
+        .task-list { overflow-y: auto; flex-grow: 1; margin: 10px 0; }
+        .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; }
+        .done { text-decoration: line-through; opacity: 0.4; }
+        
         .priority-high { color: var(--danger); font-weight: 600; }
         .priority-medium { color: var(--warning); font-weight: 500; }
-        .done { text-decoration: line-through; opacity: 0.4 !important; color: #8b949e !important; }
-        .input-box { background: var(--input); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; width: 100%; outline: none; font-size: 0.85rem; }
-        .silhouette { border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--border); font-size: 1.1rem; }
+        
+        .input-box { 
+            background: var(--input); border: 1px solid var(--border); color: var(--text); 
+            padding: 10px; border-radius: 8px; width: 100%; outline: none; font-size: 0.85rem;
+        }
+        
+        .silhouette { 
+            border: 2px dashed var(--border); display: flex; align-items: center; 
+            justify-content: center; cursor: pointer; color: var(--border); font-size: 1.1rem;
+        }
 
         @media (max-width: 800px) {
             header { padding: 15px 20px; }
-            .board { display: flex; flex-direction: row; height: auto; }
+            .board { display: flex; flex-direction: row; }
             .card, .silhouette { width: 85vw; height: 320px; margin-right: 15px; }
             .board-wrapper { padding: 0 20px; }
         }
@@ -98,21 +92,22 @@
 </head>
 <body data-theme="dark">
 
-    <div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    
     <nav id="sidebar">
-        <div style="font-family:'Montserrat'; font-size:1.4rem; margin-bottom:40px; color:var(--accent)">ODAK</div>
-        <div class="nav-link active" onclick="toggleMenu()">📅 Görevlerim</div>
-        <div class="nav-link" onclick="alert('Yakında!'); toggleMenu()">📝 Not Defteri</div>
-        <div class="nav-link" onclick="temaDegistir(); toggleMenu()">🌓 Temayı Değiştir</div>
-        <div style="position: absolute; bottom: 20px; font-size: 0.7rem; opacity: 0.4;">v2.9.2 Stable</div>
+        <h2 style="font-family:'Montserrat'; color:var(--accent); margin-bottom:30px;">MENU</h2>
+        <div class="menu-item" onclick="toggleMenu()">📅 Günlük Plan</div>
+        <div class="menu-item" onclick="temaDegistir()">🌓 Temayı Değiştir</div>
+        <div class="menu-item" onclick="alert('v2.9.5 Stabil Sürüm'); toggleMenu()">ℹ️ Hakkında</div>
+        <div style="position:absolute; bottom:20px; font-size:10px; opacity:0.3;">ODAK DEFTERİ &copy; 2026</div>
     </nav>
 
     <header>
-        <div class="logo-area">
-            <button class="menu-trigger" onclick="toggleMenu()">☰</button>
-            <h1>Odak Defteri</h1>
+        <div class="header-left">
+            <button class="burger" onclick="toggleMenu()">☰</button>
+            <h1>Odak Defteri Beta</h1>
         </div>
-        <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn" style="background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:8px 12px; cursor:pointer;">🌙</button>
+        <button onclick="temaDegistir()" id="theme-btn" style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:5px 10px; cursor:pointer;">🌙</button>
     </header>
 
     <div class="board-wrapper" id="scroll-area">
@@ -128,14 +123,6 @@
             document.getElementById('overlay').classList.toggle('active');
         }
 
-        // Mouse Wheel Scroll (v2.8.1 özelliği)
-        scrollArea.addEventListener('wheel', (e) => {
-            if (e.deltaY !== 0) {
-                e.preventDefault();
-                scrollArea.scrollLeft += (e.deltaY * 0.8);
-            }
-        }, { passive: false });
-
         function temaSet(tema) {
             document.body.setAttribute('data-theme', tema);
             localStorage.setItem('tema', tema);
@@ -144,6 +131,7 @@
 
         function temaDegistir() {
             temaSet(document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+            toggleMenu();
         }
 
         temaSet(localStorage.getItem('tema') || 'dark');
@@ -160,7 +148,7 @@
                 card.className = 'card';
                 card.innerHTML = `
                     <button class="delete-btn" onclick="kartSil(${gIdx})">&times;</button>
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
                         <span style="font-family:'Montserrat'; font-size:0.9rem; font-weight:600;">${gun.tarih}</span>
                         <span style="font-size:11px; color:var(--accent); font-weight:bold;">%${oran}</span>
                     </div>
@@ -196,16 +184,17 @@
             const yazi = t.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', weekday: 'short' });
             gunler.push({ tarih: yazi, gorevler: [] });
             ciz();
+            scrollArea.scrollLeft = scrollArea.scrollWidth;
         }
 
         function kartSil(idx) {
-            if(confirm('Silinsin mi?')) { gunler.splice(idx, 1); ciz(); }
+            if(confirm('Günü sil?')) { gunler.splice(idx, 1); ciz(); }
         }
 
         function ekle(e, idx) {
-            const yazi = e.target.value.trim();
-            if(!yazi) return;
-            gunler[idx].gorevler.push({ txt: yazi, ok: false });
+            const val = e.target.value.trim();
+            if(!val) return;
+            gunler[idx].gorevler.push({ txt: val, ok: false });
             e.target.value = "";
             ciz();
         }
@@ -214,6 +203,14 @@
             gunler[gIdx].gorevler[tIdx].ok = !gunler[gIdx].gorevler[tIdx].ok;
             ciz();
         }
+
+        // Mouse Wheel (v2.8.1 özelliği)
+        scrollArea.addEventListener('wheel', (e) => {
+            if (e.deltaY !== 0) {
+                e.preventDefault();
+                scrollArea.scrollLeft += (e.deltaY * 0.8);
+            }
+        }, { passive: false });
 
         ciz();
     </script>
