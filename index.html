@@ -50,6 +50,55 @@
     <footer>Odak Defterim &copy; 2026</footer>
     <script>
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
+
+        // --- SES MOTORU (Web Audio API) ---
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function sesCal(tip) {
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    if (tip === 'basari') {
+        // İnce ve kısa bir "ding" sesi
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); 
+        oscillator.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+    } else {
+        // Kalın ve kısa bir "pıt" sesi
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+        gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+    }
+
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + 0.2);
+}
+
+// --- GÜNCEL TAMAM FONKSİYONU ---
+function tamam(gIdx, tIdx) {
+    const gorev = gunler[gIdx].gorevler[tIdx];
+    gorev.ok = !gorev.ok;
+    
+    // Ses çal
+    if (gorev.ok) {
+        sesCal('basari');
+    } else {
+        sesCal('geri');
+    }
+    
+    ciz();
+}
+
+
+
+
+        
         const scrollArea = document.getElementById('scroll-area');
         scrollArea.addEventListener('wheel', (evt) => { evt.preventDefault(); scrollArea.scrollLeft += evt.deltaY; });
 
