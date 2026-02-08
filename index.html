@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Odak Defteri Beta v2.8.3</title>
+    <title>Odak Defteri Beta v2.8.4</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -71,8 +71,20 @@
             display: flex; flex-direction: column; box-shadow: var(--shadow);
         }
         
-        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; line-height: 1; }
+        /* GÜNCELLENMİŞ SİLME BUTONU */
+        .delete-btn { 
+            position: absolute; top: 10px; right: 10px; 
+            background: none; border: none; color: #8b949e; 
+            font-size: 20px; cursor: pointer; line-height: 1;
+            z-index: 5; transition: color 0.2s;
+        }
         .delete-btn:hover { color: var(--danger); }
+
+        /* GÜNCELLENMİŞ BAŞLIK ALANI */
+        .card-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 2px; padding-right: 20px; /* Buton çakışmasını önler */
+        }
 
         .task-list { overflow-y: auto; flex-grow: 1; margin-bottom: 10px; }
         
@@ -120,7 +132,7 @@
         <div class="board" id="board"></div>
     </div>
 
-    <footer>Odak Defterim &copy; 2026 | v2.8.3</footer>
+    <footer>Odak Defterim &copy; 2026 | v2.8.4</footer>
 
     <script>
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
@@ -156,8 +168,8 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
-                    <button class="delete-btn" onclick="kartSil(${gIdx})">&times;</button>
-                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:2px;">
+                    <button class="delete-btn" onclick="kartSil(${gIdx})" title="Günü Sil">&times;</button>
+                    <div class="card-header">
                         <span style="font-family:'Montserrat'; font-size:0.9rem; font-weight:600;">${gun.tarih}</span>
                         <span style="font-size:11px; color:var(--accent); font-weight:bold;">%${oran}</span>
                     </div>
@@ -206,12 +218,15 @@
             const yazi = t.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', weekday: 'short' });
             gunler.push({ tarih: yazi, gorevler: [] });
             ciz();
+            // Yeni gün eklendiğinde en sağa kaydır
+            setTimeout(() => {
+                scrollArea.scrollTo({ left: scrollArea.scrollWidth, behavior: 'smooth' });
+            }, 100);
         }
 
-        // Onay sormadan silen güncellenmiş fonksiyon
         function kartSil(idx) {
-            gunler.splice(idx, 1); 
-            ciz();
+            gunler.splice(idx, 1);
+            ciz();         }
         }
 
         function ekle(e, idx) {
