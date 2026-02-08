@@ -50,47 +50,52 @@
     <footer>Odak Defterim &copy; 2026</footer>
 
     <script>
+        // 1. Veri Hazırlığı
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
 
-        // --- SES MOTORU ---
-        let audioCtx;
+        // 2. Ses Motoru Yapılandırması
+        let audioCtx = null;
         function sesCal(tip) {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
 
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
 
-            if (tip === 'basari') {
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); 
-                oscillator.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-            } else {
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-            }
-            oscillator.start();
-            oscillator.stop(audioCtx.currentTime + 0.2);
+                if (tip === 'basari') {
+                    osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
+                    osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                } else {
+                    osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                }
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.2);
+            } catch (e) { console.log("Ses çalınamadı"); }
         }
 
+        // 3. Yatay Kaydırma
         const scrollArea = document.getElementById('scroll-area');
         scrollArea.addEventListener('wheel', (evt) => { 
             evt.preventDefault(); 
             scrollArea.scrollLeft += evt.deltaY; 
         });
 
+        // 4. Arayüzü Çizme
         function ciz() {
             const board = document.getElementById('board');
             board.innerHTML = '';
+            
             gunler.forEach((gun, gIdx) => {
                 const bitti = gun.gorevler.filter(t => t.ok).length;
                 const oran = gun.gorevler.length === 0 ? 0 : Math.round((bitti / gun.gorevler.length) * 100);
+                
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
@@ -105,10 +110,59 @@
                             let cleanText = t.txt;
                             if(t.txt.startsWith('!')) { pClass = "priority-high"; cleanText = t.txt.substring(1); }
                             else if(t.txt.startsWith('?')) { pClass = "priority-medium"; cleanText = t.txt.substring(1); }
-                            return `<div class="task-item ${t.ok ? 'done' : pClass}">
-                                <input type="checkbox" ${t.ok ? 'checked' : ''} onchange="tamam(${gIdx},${tIdx})">
-                                <span>${cleanText}</span>
-                            </div>`;
+                            return `
+                                <div class="task-item ${t.ok ? 'done' : pClass}">
+                                    <input type="checkbox" ${t.ok ? 'checked' : ''} onchange="tamam(${gIdx},${tIdx})">
+                                    <span>${cleanText}</span>
+                                </div>`;
                         }).join('')}
                     </div>
                     <div style="font-size: 9px; color: #484f58; margin-bottom: 5px;"><i>! Acil, ? Bekleyebilir</i></div>
+                    <input type="text" class="input-box" placeholder="Görev oluştur..." onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
+                `;
+                board.appendChild(card);
+            });
+
+            const siluet = document.createElement('div');
+            siluet.className = 'silhouette';
+            siluet.onclick = yeniGun;
+            siluet.innerHTML = `<span>+ Yeni Gün</span>`;
+            board.appendChild(siluet);
+            
+            localStorage.setItem('ajanda_v8', JSON.stringify(gunler));
+        }
+
+        // 5. Fonksiyonlar
+        function yeniGun() {
+            const t = new Date(); t.setDate(t.getDate() + gunler.length);
+            const yazi = t.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', weekday: 'short' });
+            gunler.push({ tarih: yazi, gorevler: [] });
+            ciz();
+        }
+
+        function kartSil(idx) {
+            if(confirm('Bu günü silmek istediğine emin misin?')) {
+                gunler.splice(idx, 1);
+                ciz();
+            }
+        }
+
+        function ekle(e, idx) {
+            if(e.target.value.trim() === "") return;
+            gunler[idx].gorevler.push({ txt: e.target.value, ok: false });
+            e.target.value = "";
+            ciz();
+        }
+
+        function tamam(gIdx, tIdx) {
+            const gorev = gunler[gIdx].gorevler[tIdx];
+            gorev.ok = !gorev.ok;
+            if (gorev.ok) sesCal('basari'); else sesCal('geri');
+            ciz();
+        }
+
+        // Başlat
+        ciz();
+    </script>
+</body>
+</html>
