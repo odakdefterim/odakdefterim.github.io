@@ -22,22 +22,19 @@
             margin: 0; padding: 0; height: 100vh; width: 100vw;
             overflow: hidden; background-color: var(--bg);
             color: var(--text); font-family: 'Inter', sans-serif;
-            touch-action: none; /* Pull-to-refresh için manuel kontrol */
         }
-        body { display: flex; flex-direction: column; }
+        body { display: flex; flex-direction: column; position: relative; }
         
-        /* Yenileme Göstergesi */
-        #refresh-indicator {
-            position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
-            width: 35px; height: 35px; background: var(--accent); border-radius: 50%;
+        /* Yenileme Göstergesi Stili */
+        #ptr-element {
+            position: absolute; top: -40px; left: 0; width: 100%; height: 40px;
             display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: bold; z-index: 1000; transition: transform 0.2s;
+            font-size: 1.2rem; transition: transform 0.1s; z-index: 10;
         }
 
         header { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; flex-shrink: 0; }
         .logo-area { display: flex; align-items: center; gap: 12px; }
         header img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
-        
         h1 { font-family: 'Montserrat'; font-size: 1.4rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
 
         .theme-toggle {
@@ -50,53 +47,30 @@
             flex-grow: 1; overflow-x: auto; overflow-y: hidden; 
             display: flex; align-items: center; padding: 0 40px;
             -webkit-overflow-scrolling: touch;
-            touch-action: pan-x; /* Yatay kaydırmaya izin ver */
         }
 
         .board { 
-            display: grid; 
-            grid-template-rows: repeat(2, 290px); 
-            grid-auto-flow: column; 
-            gap: 20px; 
-            height: 85%;
-            align-items: start;
+            display: grid; grid-template-rows: repeat(2, 290px); 
+            grid-auto-flow: column; gap: 20px; height: 85%; align-items: start;
         }
 
-        .card, .silhouette { 
-            width: 280px; height: 300px; border-radius: 12px; 
-            box-sizing: border-box; flex-shrink: 0; position: relative;
-        }
-
-        .card { 
-            background: var(--card); padding: 20px; border: 1px solid var(--border); 
-            display: flex; flex-direction: column; box-shadow: var(--shadow);
-        }
-        
+        .card, .silhouette { width: 280px; height: 300px; border-radius: 12px; box-sizing: border-box; flex-shrink: 0; position: relative; }
+        .card { background: var(--card); padding: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: var(--shadow); }
         .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
-        .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; touch-action: pan-y; }
-        
+        .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; }
         .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; word-break: break-word; }
         .priority-high { color: var(--danger); font-weight: 600; }
         .priority-medium { color: var(--warning); font-weight: 500; }
         .priority-low { color: var(--accent); }
         .done { text-decoration: line-through; opacity: 0.4 !important; color: #8b949e !important; }
         
-        input[type="checkbox"] { margin-right: 10px; cursor: pointer; }
         .input-box { 
             background: var(--input); border: 1px solid var(--border); color: var(--text); 
-            padding: 10px; border-radius: 8px; width: 100%; box-sizing: border-box; 
-            outline: none; font-size: 0.85rem;
+            padding: 10px; border-radius: 8px; width: 100%; box-sizing: border-box; outline: none; font-size: 0.85rem;
         }
         
-        .silhouette { 
-            border: 2px dashed var(--border); display: flex; align-items: center; 
-            justify-content: center; cursor: pointer; color: var(--border); font-size: 1.1rem;
-        }
-
-        .info-note { 
-            font-size: 9px; opacity: 0.6; margin-bottom: 5px; font-style: italic; 
-            display: flex; justify-content: space-between; 
-        }
+        .silhouette { border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--border); font-size: 1.1rem; }
+        .info-note { font-size: 9px; opacity: 0.6; margin-bottom: 5px; font-style: italic; display: flex; justify-content: space-between; }
 
         @media (max-width: 800px) {
             header { padding: 15px 20px; }
@@ -104,17 +78,16 @@
             .board { display: flex; flex-direction: row; height: auto; }
             .card, .silhouette { width: 85vw; height: 320px; margin-right: 15px; }
         }
-
         footer { padding: 10px; text-align: center; font-size: 0.75rem; opacity: 0.5; border-top: 1px solid var(--border); }
     </style>
 </head>
 <body data-theme="dark">
-    <div id="refresh-indicator">↻</div>
+    <div id="ptr-element">↻</div>
 
     <header>
         <div class="logo-area">
             <img src="logo.png" alt="Logo">
-            <h1>Odak Defteri Beta v2.8.0</h1>
+            <h1>Odak Defteri</h1>
         </div>
         <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">🌙 Gece Modu</button>
     </header>
@@ -123,46 +96,39 @@
         <div class="board" id="board"></div>
     </div>
 
-    <footer>Odak Defterim &copy; 2026 | Beta v2.8.0</footer>
+    <footer>Odak Defterim &copy; 2026</footer>
 
     <script>
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
-        const scrollArea = document.getElementById('scroll-area');
-        const indicator = document.getElementById('refresh-indicator');
+        
+        // --- Refresh Mekaniği (Minimal ve Etkili) ---
+        let touchStart = 0;
+        const ptr = document.getElementById('ptr-element');
 
-        // --- REFRESH MEKANİĞİ BAŞLANGIÇ ---
-        let startY = 0;
-        let pulling = false;
+        window.addEventListener('touchstart', e => {
+            touchStart = e.touches[0].pageY;
+        }, {passive: true});
 
-        document.body.addEventListener('touchstart', (e) => {
-            startY = e.touches[0].pageY;
-        }, { passive: true });
-
-        document.body.addEventListener('touchmove', (e) => {
-            const currentY = e.touches[0].pageY;
-            const diff = currentY - startY;
-
-            if (diff > 0 && window.scrollY === 0) {
-                pulling = true;
-                const move = Math.min(diff / 2, 80); // Maksimum 80px insin
-                indicator.style.transform = `translateX(-50%) translateY(${move}px) rotate(${move * 4}deg)`;
-                if (move > 70) indicator.style.background = 'var(--danger)';
-                else indicator.style.background = 'var(--accent)';
+        window.addEventListener('touchmove', e => {
+            const touchCurrent = e.touches[0].pageY;
+            const diff = touchCurrent - touchStart;
+            
+            if (diff > 0 && diff < 100) {
+                ptr.style.transform = `translateY(${diff}px) rotate(${diff * 2}deg)`;
             }
-        }, { passive: true });
+        }, {passive: true});
 
-        document.body.addEventListener('touchend', (e) => {
-            const diff = e.changedTouches[0].pageY - startY;
-            if (pulling && diff > 70) {
-                indicator.style.transform = `translateX(-50%) translateY(40px) scale(1.2)`;
-                setTimeout(() => location.reload(), 300); // Sayfayı yenile
+        window.addEventListener('touchend', e => {
+            const diff = e.changedTouches[0].pageY - touchStart;
+            if (diff > 70) {
+                location.reload();
             } else {
-                indicator.style.transform = `translateX(-50%) translateY(0)`;
+                ptr.style.transform = `translateY(0)`;
             }
-            pulling = false;
-        });
-        // --- REFRESH MEKANİĞİ BİTİŞ ---
+        }, {passive: true});
+        // -------------------------------------------
 
+        const scrollArea = document.getElementById('scroll-area');
         scrollArea.addEventListener('wheel', function(e) {
             if (e.deltaY !== 0) {
                 e.preventDefault();
@@ -185,11 +151,9 @@
         function ciz() {
             const board = document.getElementById('board');
             board.innerHTML = '';
-            
             gunler.forEach((gun, gIdx) => {
                 const bitti = gun.gorevler.filter(t => t.ok).length;
                 const oran = gun.gorevler.length === 0 ? 0 : Math.round((bitti / gun.gorevler.length) * 100);
-                
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
@@ -211,25 +175,16 @@
                                 </div>`;
                         }).join('')}
                     </div>
-                    <div class="info-note">
-                        <span>! Acil, ? Bekleyebilir</span>
-                        <span>Maks. 50</span>
-                    </div>
-                    <input type="text" 
-                           class="input-box" 
-                           placeholder="Görev oluştur..." 
-                           maxlength="50"
-                           onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
+                    <div class="info-note"><span>! Acil, ? Bekle</span><span>Maks. 50</span></div>
+                    <input type="text" class="input-box" placeholder="Görev..." maxlength="50" onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
                 `;
                 board.appendChild(card);
             });
-
             const siluet = document.createElement('div');
             siluet.className = 'silhouette';
             siluet.onclick = yeniGun;
             siluet.innerHTML = `<span>+ Yeni Gün</span>`;
             board.appendChild(siluet);
-            
             localStorage.setItem('ajanda_v8', JSON.stringify(gunler));
         }
 
@@ -240,11 +195,7 @@
             ciz();
         }
 
-        function kartSil(idx) {
-            gunler.splice(idx, 1); 
-            ciz();
-        }
-
+        function kartSil(idx) { gunler.splice(idx, 1); ciz(); }
         function ekle(e, idx) {
             const yazi = e.target.value.trim();
             if(!yazi) return;
@@ -252,13 +203,11 @@
             e.target.value = "";
             ciz();
         }
-
         function tamam(gIdx, tIdx) {
             gunler[gIdx].gorevler[tIdx].ok = !gunler[gIdx].gorevler[tIdx].ok;
             ciz();
         }
-
         ciz();
     </script>
 </body>
-</html>
+</html>s
