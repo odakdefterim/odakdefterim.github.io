@@ -22,9 +22,18 @@
             margin: 0; padding: 0; height: 100vh; width: 100vw;
             overflow: hidden; background-color: var(--bg);
             color: var(--text); font-family: 'Inter', sans-serif;
+            touch-action: none; /* Pull-to-refresh için manuel kontrol */
         }
         body { display: flex; flex-direction: column; }
         
+        /* Yenileme Göstergesi */
+        #refresh-indicator {
+            position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
+            width: 35px; height: 35px; background: var(--accent); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: bold; z-index: 1000; transition: transform 0.2s;
+        }
+
         header { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; flex-shrink: 0; }
         .logo-area { display: flex; align-items: center; gap: 12px; }
         header img { width: 35px; height: 35px; border-radius: 6px; object-fit: cover; }
@@ -41,6 +50,7 @@
             flex-grow: 1; overflow-x: auto; overflow-y: hidden; 
             display: flex; align-items: center; padding: 0 40px;
             -webkit-overflow-scrolling: touch;
+            touch-action: pan-x; /* Yatay kaydırmaya izin ver */
         }
 
         .board { 
@@ -63,7 +73,7 @@
         }
         
         .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
-        .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; }
+        .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; touch-action: pan-y; }
         
         .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; word-break: break-word; }
         .priority-high { color: var(--danger); font-weight: 600; }
@@ -88,20 +98,6 @@
             display: flex; justify-content: space-between; 
         }
 
-        /* Refresh Göstergesi Stili */
-        #refresh-indicator {
-            position: fixed; top: -60px; left: 50%; transform: translateX(-50%);
-            width: 40px; height: 40px; background: var(--card); border: 1px solid var(--border);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: var(--shadow); z-index: 9999; transition: top 0.2s ease;
-        }
-        .spinner {
-            width: 18px; height: 18px; border: 2.5px solid var(--border);
-            border-top: 2.5px solid var(--accent); border-radius: 50%;
-        }
-        .anim-spin { animation: spin 0.8s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
         @media (max-width: 800px) {
             header { padding: 15px 20px; }
             h1 { font-size: 1.1rem; }
@@ -113,7 +109,7 @@
     </style>
 </head>
 <body data-theme="dark">
-    <div id="refresh-indicator"><div class="spinner" id="refresh-spinner"></div></div>
+    <div id="refresh-indicator">↻</div>
 
     <header>
         <div class="logo-area">
@@ -132,8 +128,41 @@
     <script>
         let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
         const scrollArea = document.getElementById('scroll-area');
+        const indicator = document.getElementById('refresh-indicator');
 
-        // Mouse tekerleği ile yatay kaydırma
+        // --- REFRESH MEKANİĞİ BAŞLANGIÇ ---
+        let startY = 0;
+        let pulling = false;
+
+        document.body.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].pageY;
+        }, { passive: true });
+
+        document.body.addEventListener('touchmove', (e) => {
+            const currentY = e.touches[0].pageY;
+            const diff = currentY - startY;
+
+            if (diff > 0 && window.scrollY === 0) {
+                pulling = true;
+                const move = Math.min(diff / 2, 80); // Maksimum 80px insin
+                indicator.style.transform = `translateX(-50%) translateY(${move}px) rotate(${move * 4}deg)`;
+                if (move > 70) indicator.style.background = 'var(--danger)';
+                else indicator.style.background = 'var(--accent)';
+            }
+        }, { passive: true });
+
+        document.body.addEventListener('touchend', (e) => {
+            const diff = e.changedTouches[0].pageY - startY;
+            if (pulling && diff > 70) {
+                indicator.style.transform = `translateX(-50%) translateY(40px) scale(1.2)`;
+                setTimeout(() => location.reload(), 300); // Sayfayı yenile
+            } else {
+                indicator.style.transform = `translateX(-50%) translateY(0)`;
+            }
+            pulling = false;
+        });
+        // --- REFRESH MEKANİĞİ BİTİŞ ---
+
         scrollArea.addEventListener('wheel', function(e) {
             if (e.deltaY !== 0) {
                 e.preventDefault();
@@ -141,7 +170,6 @@
             }
         }, { passive: false });
 
-        // Tema Yönetimi
         function temaSet(tema) {
             document.body.setAttribute('data-theme', tema);
             localStorage.setItem('tema', tema);
@@ -154,7 +182,6 @@
 
         temaSet(localStorage.getItem('tema') || 'dark');
 
-        // UI Çizim
         function ciz() {
             const board = document.getElementById('board');
             board.innerHTML = '';
@@ -206,7 +233,6 @@
             localStorage.setItem('ajanda_v8', JSON.stringify(gunler));
         }
 
-        // Kart ve Görev Fonksiyonları
         function yeniGun() {
             const t = new Date(); t.setDate(t.getDate() + gunler.length);
             const yazi = t.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', weekday: 'short' });
@@ -215,10 +241,8 @@
         }
 
         function kartSil(idx) {
-            if(confirm("Bu günü silmek istediğine emin misin?")) {
-                gunler.splice(idx, 1); 
-                ciz();
-            }
+            gunler.splice(idx, 1); 
+            ciz();
         }
 
         function ekle(e, idx) {
@@ -234,44 +258,6 @@
             ciz();
         }
 
-        // --- PULL TO REFRESH MANTIĞI ---
-        let startY = 0;
-        const refreshInd = document.getElementById('refresh-indicator');
-        const refreshSpinner = document.getElementById('refresh-spinner');
-
-        window.addEventListener('touchstart', (e) => {
-            if (window.scrollY === 0) startY = e.touches[0].pageY;
-        }, { passive: true });
-
-        window.addEventListener('touchmove', (e) => {
-            const currentY = e.touches[0].pageY;
-            const diff = currentY - startY;
-            if (diff > 0 && window.scrollY === 0) {
-                const move = Math.min(diff / 2.5, 70); 
-                refreshInd.style.top = `${move}px`;
-                refreshSpinner.style.transform = `rotate(${diff * 2}deg)`;
-            }
-        }, { passive: true });
-
-        window.addEventListener('touchend', (e) => {
-            const endY = e.changedTouches[0].pageY;
-            if (endY - startY > 120 && window.scrollY === 0) {
-                refreshSpinner.classList.add('anim-spin');
-                if (navigator.vibrate) navigator.vibrate(30);
-                
-                // Yenileme simülasyonu
-                setTimeout(() => {
-                    gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
-                    ciz();
-                    refreshInd.style.top = '-60px';
-                    refreshSpinner.classList.remove('anim-spin');
-                }, 800);
-            } else {
-                refreshInd.style.top = '-60px';
-            }
-        });
-
-        // Başlangıç çizimi
         ciz();
     </script>
 </body>
