@@ -8,13 +8,11 @@
     <style>
         :root {
             --bg: #f0f2f5; --card: #ffffff; --accent: #0969da; --text: #1f2328; 
-            --border: #d0d7de; --danger: #cf222e; --warning: #9a6700; 
-            --input: #ffffff; --shadow: 0 6px 16px rgba(0,0,0,0.08);
+            --border: #d0d7de; --input: #ffffff; --shadow: 0 6px 16px rgba(0,0,0,0.08);
         }
         [data-theme="dark"] {
             --bg: #0d1117; --card: #161b22; --accent: #58a6ff; --text: #c9d1d9; 
-            --border: #30363d; --danger: #f85149; --warning: #d29922; 
-            --input: #010409; --shadow: none;
+            --border: #30363d; --input: #010409; --shadow: none;
         }
 
         html, body {
@@ -26,6 +24,7 @@
 
         body { display: flex; flex-direction: column; position: relative; }
 
+        /* Refresh Alanı */
         #pull-to-refresh {
             position: absolute; top: 0; left: 0; width: 100%; height: 60px;
             display: flex; align-items: center; justify-content: center;
@@ -34,14 +33,13 @@
             transition: transform 0.1s ease; font-size: 0.9rem;
         }
 
-        /* --- Logo Boyutu v2.2.1 Ayarı --- */
         header { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; flex-shrink: 0; }
         .logo-area { display: flex; align-items: center; gap: 15px; }
         
+        /* v2.2.1'den gelen büyük logo */
         header img { 
-            width: 50px; /* Logoyu büyüttük */
+            width: 50px; 
             height: 50px; 
-            border-radius: 10px; 
             object-fit: contain;
             display: block;
         }
@@ -51,42 +49,60 @@
         .theme-toggle {
             background: var(--card); border: 1px solid var(--border); color: var(--text);
             padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.8rem;
-            box-shadow: var(--shadow);
         }
 
+        /* Çift Sıra Yatay Düzen */
         .board-wrapper { 
             flex-grow: 1; overflow-x: auto; overflow-y: hidden; 
             display: flex; align-items: center; padding: 0 40px;
             -webkit-overflow-scrolling: touch;
         }
 
-        .board { display: grid; grid-template-rows: repeat(2, 290px); grid-auto-flow: column; gap: 20px; height: 85%; }
+        .board { 
+            display: grid; 
+            grid-template-rows: repeat(2, 290px); 
+            grid-auto-flow: column; 
+            gap: 20px; 
+            height: 85%; 
+        }
+
         .card, .silhouette { width: 280px; height: 280px; border-radius: 12px; flex-shrink: 0; position: relative; }
-        .card { background: var(--card); padding: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: var(--shadow); box-sizing: border-box; }
-        .delete-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; color: #8b949e; font-size: 20px; cursor: pointer; }
+        .card { 
+            background: var(--card); padding: 20px; border: 1px solid var(--border); 
+            display: flex; flex-direction: column; box-shadow: var(--shadow); box-sizing: border-box; 
+        }
+
         .task-list { overflow-y: auto; flex-grow: 1; margin: 15px 0; }
         .task-item { display: flex; align-items: center; margin: 8px 0; font-size: 0.9rem; }
         .done { text-decoration: line-through; opacity: 0.4; }
-        .input-box { background: var(--input); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; width: 100%; box-sizing: border-box; outline: none; }
-        .silhouette { border: 2px dashed var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--border); }
+
+        .input-box { 
+            background: var(--input); border: 1px solid var(--border); color: var(--text); 
+            padding: 10px; border-radius: 8px; width: 100%; box-sizing: border-box; outline: none; 
+        }
+
+        .silhouette { 
+            border: 2px dashed var(--border); display: flex; align-items: center; 
+            justify-content: center; cursor: pointer; color: var(--border); font-weight: bold;
+        }
 
         @media (max-width: 800px) {
             header { padding: 15px 20px; }
             .board { display: flex; flex-direction: row; align-items: center; height: auto; }
             .card, .silhouette { width: 85vw; height: 350px; margin-right: 15px; }
-            header img { width: 40px; height: 40px; } /* Mobilde hafif küçültme */
+            header img { width: 45px; height: 45px; }
         }
-        footer { padding: 10px; text-align: center; font-size: 0.75rem; opacity: 0.5; border-top: 1px solid var(--border); }
+        footer { padding: 10px; text-align: center; font-size: 0.75rem; opacity: 0.3; }
     </style>
 </head>
 <body data-theme="dark">
 
-    <div id="pull-to-refresh">Aşağı çekerek yenile...</div>
+    <div id="pull-to-refresh">Bırak ve Yenile</div>
 
     <header>
         <div class="logo-area">
-            <img src="logo.png" alt="Logo">
-            <h1>Odak Defterim Beta<br>v2.8.0</h1>
+            <img src="logo.png" alt="Logo" onerror="this.style.opacity='0.5'">
+            <h1>Odak Defterim<br>v2.8.0</h1>
         </div>
         <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">🌙 Gece Modu</button>
     </header>
@@ -98,38 +114,45 @@
     <footer>Odak Defterim &copy; 2026</footer>
 
     <script>
-        // ... (Script içeriği aynı kalmıştır) ...
-        let gunler = JSON.parse(localStorage.getItem('ajanda_v8')) || [];
+        let gunler = JSON.parse(localStorage.getItem('ajanda_v280')) || [];
         const scrollArea = document.getElementById('scroll-area');
         const ptr = document.getElementById('pull-to-refresh');
 
+        // --- PULL TO REFRESH MANTIĞI ---
         let touchStart = 0;
         let isPulling = false;
 
-        document.addEventListener('touchstart', (e) => { touchStart = e.touches[0].pageY; }, {passive: true});
+        document.addEventListener('touchstart', (e) => {
+            if(scrollArea.scrollLeft === 0) touchStart = e.touches[0].pageY;
+        }, {passive: true});
+
         document.addEventListener('touchmove', (e) => {
             const touchCurrent = e.touches[0].pageY;
             const diff = touchCurrent - touchStart;
-            if (window.scrollY <= 0 && diff > 0) {
+            if (diff > 0 && scrollArea.scrollLeft === 0) {
                 isPulling = true;
                 const pullHeight = Math.min(diff / 2, 70); 
                 ptr.style.transform = `translateY(${-100 + (pullHeight * 1.5)}%)`;
-                ptr.innerText = diff > 180 ? "Bırak ve Yenile" : "Aşağı çekerek yenile...";
             }
         }, {passive: true});
 
         document.addEventListener('touchend', (e) => {
             const diff = e.changedTouches[0].pageY - touchStart;
-            if (isPulling && diff > 180) {
+            if (isPulling && diff > 150) {
                 ptr.style.transform = `translateY(0)`;
-                ptr.innerText = "Yükleniyor...";
                 setTimeout(() => location.reload(), 500);
-            } else { ptr.style.transform = `translateY(-100%)`; }
+            } else {
+                ptr.style.transform = `translateY(-100%)`;
+            }
             isPulling = false;
         });
 
+        // Yatay Scroll
         scrollArea.addEventListener('wheel', (e) => {
-            if (e.deltaY !== 0) { e.preventDefault(); scrollArea.scrollLeft += (e.deltaY * 0.8); }
+            if (e.deltaY !== 0) {
+                e.preventDefault();
+                scrollArea.scrollLeft += (e.deltaY * 0.8);
+            }
         }, { passive: false });
 
         function temaSet(tema) {
@@ -147,32 +170,34 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `
-                    <button class="delete-btn" onclick="kartSil(${gIdx})">&times;</button>
-                    <div style="font-weight:bold; margin-bottom:10px;">${gun.tarih}</div>
+                    <div style="font-weight:bold; margin-bottom:10px; display:flex; justify-content:space-between;">
+                        ${gun.tarih}
+                        <span onclick="kartSil(${gIdx})" style="cursor:pointer; opacity:0.3;">✕</span>
+                    </div>
                     <div class="task-list">${gun.gorevler.map((t, tIdx) => `
                         <div class="task-item ${t.ok ? 'done' : ''}">
                             <input type="checkbox" ${t.ok ? 'checked' : ''} onchange="tamam(${gIdx},${tIdx})">
                             <span style="margin-left:8px;">${t.txt}</span>
                         </div>`).join('')}
                     </div>
-                    <input type="text" class="input-box" placeholder="Görev..." onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
+                    <input type="text" class="input-box" placeholder="Görev ekle..." onkeypress="if(event.key==='Enter') ekle(event, ${gIdx})">
                 `;
                 board.appendChild(card);
             });
             const siluet = document.createElement('div');
             siluet.className = 'silhouette';
             siluet.onclick = yeniGun;
-            siluet.innerHTML = `<span>+ Yeni Gün</span>`;
+            siluet.innerHTML = `+ Yeni Gün`;
             board.appendChild(siluet);
-            localStorage.setItem('ajanda_v8', JSON.stringify(gunler));
+            localStorage.setItem('ajanda_v280', JSON.stringify(gunler));
         }
 
         function yeniGun() {
             const t = new Date(); t.setDate(t.getDate() + gunler.length);
-            gunler.push({ tarih: t.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' }), gorevler: [] });
+            gunler.push({ tarih: t.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', weekday: 'short' }), gorevler: [] });
             ciz();
         }
-        function kartSil(idx) { gunler.splice(idx, 1); ciz(); }
+        function kartSil(idx) { if(confirm('Silsin mi?')) { gunler.splice(idx, 1); ciz(); } }
         function ekle(e, idx) {
             if(!e.target.value.trim()) return;
             gunler[idx].gorevler.push({ txt: e.target.value.trim(), ok: false });
