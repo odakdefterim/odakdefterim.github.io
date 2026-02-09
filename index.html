@@ -7,6 +7,30 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        .visitor-box {
+    margin-top: auto; /* Menünün en altına iter */
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text);
+}
+
+#user-count {
+    font-weight: bold;
+    font-size: 1.1rem;
+    display: block;
+}
+
+.visitor-icon {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    display: block;
+}
+
+
+        
         #about-panel.open { right: 0 !important; }
         :root {
             --bg: #f0f2f5; --card: #ffffff; --accent: #0969da; --text: #1f2328; 
@@ -481,5 +505,30 @@
 
         ciz();
     </script>
+<div class="visitor-box">
+    <span class="visitor-icon">👥</span>
+    <span id="user-count">...</span> 
+    <small>Ziyaretçi</small>
+</div>
+
+    <script>
+        // 2. ADIM: JAVASCRIPT FONKSİYONUNU BURAYA EKLE
+        async function getVisits() {
+            try {
+                // Not: api.countapi.xyz bazen bakımda olabilir, 
+                // çalışmazsa 'Aktif' yazar, sorun çıkarmaz.
+                const response = await fetch('https://api.countapi.xyz/hit/odak-defterim-2026/visits');
+                const data = await response.json();
+                document.getElementById('user-count').innerText = data.value.toLocaleString();
+            } catch (error) {
+                document.getElementById('user-count').innerText = "Aktif";
+            }
+        }
+
+        // 3. ADIM: SAYFA YÜKLENİNCE ÇALIŞTIR
+        getVisits();
+    </script>
+
+</body> </html>
 </body>
 </html>
