@@ -7,6 +7,89 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+                        .custom-modal {
+                    position: fixed; 
+                    inset: 0; 
+                    background: rgba(0,0,0,0.7); /* Arkadaki içeriği karartır */
+                    display: none; /* Başlangıçta gizli */
+                    align-items: center; 
+                    justify-content: center;
+                    z-index: 10000; /* En üstte görünmesi için */
+                    backdrop-filter: blur(4px); /* Arkayı bulanıklaştırır */
+                }
+                
+                /* Modal kutusunun kendisi */
+                .modal-content {
+                    background: var(--card); 
+                    padding: 30px; 
+                    border-radius: 16px;
+                    width: 320px; 
+                    text-align: center; 
+                    border: 1px solid var(--border);
+                    box-shadow: var(--shadow); 
+                    transform: scale(0.9); 
+                    transition: 0.2s ease;
+                }
+                
+                /* Modal açıldığında devreye giren sınıf */
+                .custom-modal.active { 
+                    display: flex; 
+                }
+                
+                .custom-modal.active .modal-content { 
+                    transform: scale(1); 
+                }
+                
+                .modal-content h3 { 
+                    margin: 0 0 10px 0; 
+                    color: var(--danger); 
+                    font-family: 'Montserrat'; 
+                }
+                
+                .modal-content p { 
+                    font-size: 0.9rem; 
+                    opacity: 0.8; 
+                    margin-bottom: 25px; 
+                }
+                
+                /* Buton grubu */
+                .modal-buttons { 
+                    display: flex; 
+                    gap: 10px; 
+                }
+                
+                .modal-buttons button {
+                    flex: 1; 
+                    padding: 12px; 
+                    border: none; 
+                    border-radius: 8px;
+                    cursor: pointer; 
+                    font-weight: 600; 
+                    font-family: 'Inter'; 
+                    transition: 0.2s;
+                }
+                
+                .btn-cancel { 
+                    background: var(--bg); 
+                    color: var(--text); 
+                }
+                
+                .btn-confirm { 
+                    background: var(--danger); 
+                    color: white; 
+                }
+                
+                .btn-confirm:hover { 
+                    opacity: 0.9; 
+                    transform: translateY(-2px); 
+                }
+
+
+
+
+
+
+        
         #about-panel.open { right: 0 !important; }
         :root {
             --bg: #f0f2f5; --card: #ffffff; --accent: #0969da; --text: #1f2328; 
