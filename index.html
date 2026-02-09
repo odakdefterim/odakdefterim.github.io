@@ -433,12 +433,36 @@
             }, 50);
         }
 
-        function kartSil(idx) { 
-            if(confirm("Bu günü silmek istediğinize emin misiniz?")) {
-                gunler.splice(idx, 1); 
-                ciz(); 
-            }
-        }
+                // --- ONAY EKLENTİSİ VE GÜNCELLENMİŞ SİLME FONKSİYONLARI ---
+                
+                function kartSil(idx) { 
+                    // Tarayıcı varsayılan onay kutusu (Custom modal istersen eklenebilir)
+                    const onay = confirm("Bu günü ve içindeki tüm görevleri silmek istediğinize emin misiniz?");
+                    if(onay) {
+                        // Silme efekti için opsiyonel: buraya bir klas ekleyip setTimeout ile silebilirsin
+                        gunler.splice(idx, 1); 
+                        ciz(); 
+                    }
+                }
+                
+                function deleteNote(idx) { 
+                    const onay = confirm("Bu notu kalıcı olarak silmek istiyor musunuz?");
+                    if(onay) {
+                        notlar.splice(idx, 1); 
+                        localStorage.setItem('odak_notlar_v9', JSON.stringify(notlar)); 
+                        drawNotes(); 
+                    }
+                }
+                
+                // Görevleri toplu silme veya temizleme gibi bir onay mekanizması eklemek istersen:
+                function temizleOnayi() {
+                    if(confirm("Tüm tamamlanmış görevleri temizlemek ister misiniz?")) {
+                        gunler.forEach(gun => {
+                            gun.gorevler = gun.gorevler.filter(t => !t.ok);
+                        });
+                        ciz();
+                    }
+                }
 
         function ekle(e, idx) {
             const yazi = e.target.value.trim();
