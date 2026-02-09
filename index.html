@@ -517,7 +517,8 @@
             try {
                 // Not: api.countapi.xyz bazen bakımda olabilir, 
                 // çalışmazsa 'Aktif' yazar, sorun çıkarmaz.
-                const response = await fetch('https://api.countapi.xyz/hit/odak-defterim-2026/visits');
+                
+                const response = await fetch('https://api.countapi.xyz/hit/odak-ajandam-ozel-99/visits');
                 const data = await response.json();
                 document.getElementById('user-count').innerText = data.value.toLocaleString();
             } catch (error) {
