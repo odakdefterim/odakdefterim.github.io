@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        #about-panel.open { right: 0 !important; }
         :root {
             --bg: #f0f2f5; --card: #ffffff; --accent: #0969da; --text: #1f2328; 
             --border: #d0d7de; --danger: #cf222e; --warning: #9a6700; 
@@ -322,21 +323,39 @@
             pullDistance = 0;
         });
 
-        // --- DİĞER FONKSİYONLAR ---
-            // Hakkında panelini açan yeni fonksiyon
-            function openAbout() {
-                closeAll();
-                document.getElementById('about-panel').style.right = "0"; // Paneli kaydır
-                document.getElementById('overlay').classList.add('active');
-            }
+                // --- DİĞER FONKSİYONLAR ---
+                    // Hakkında panelini açan yeni fonksiyon
+                   // --- TÜM PANEL FONKSİYONLARI ---
+        
+        function toggleMenu() {
+            // Menü aç/kapat
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+        
+        function openNotes() {
+            closeAll(); // Diğerlerini kapat
+            document.getElementById('notes-panel').classList.add('open');
+            document.getElementById('overlay').classList.add('active');
+            drawNotes();
+        }
+        
+        function openAbout() {
+            closeAll(); // Diğerlerini kapat
+            document.getElementById('about-panel').classList.add('open'); // CSS class ile açıyoruz
+            document.getElementById('overlay').classList.add('active');
+        }
+        
+        function closeAll() {
+            // Her şeyi başlangıç durumuna getirir
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('notes-panel').classList.remove('open');
+            // Hakkında paneli için hem class hem style kontrolü (garanti olsun diye)
+            const about = document.getElementById('about-panel');
+            if(about) about.classList.remove('open'); 
             
-            // closeAll fonksiyonunu güncelle (tüm panelleri kapatsın)
-            function closeAll() {
-                document.getElementById('sidebar').classList.remove('open');
-                document.getElementById('notes-panel').classList.remove('open');
-                document.getElementById('about-panel').style.right = "-350px"; // Hakkında'yı kapat
-                document.getElementById('overlay').classList.remove('active');
-            }
+            document.getElementById('overlay').classList.remove('active');
+        }
 
         scrollArea.addEventListener('wheel', (e) => {
             if (e.deltaY !== 0 && window.innerWidth > 800) {
