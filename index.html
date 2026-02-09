@@ -314,32 +314,37 @@
         <textarea id="note-input" class="input-box" style="height: 100px; margin-bottom:10px; resize: none;" placeholder="Kalıcı bir not ekle..."></textarea>
         <button onclick="saveNote()" style="background:var(--accent); color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:600; width:100%;">Ekle</button>
         <div id="notes-list" style="margin-top:20px; overflow-y:auto; flex-grow:1; padding-right: 5px;"></div>
-        <div id="about-panel" class="notes-panel-style" style="position: fixed; top: 0; right: -350px; width: 320px; height: 100%; background: var(--card); border-left: 1px solid var(--border); z-index: 9999; transition: 0.3s ease; padding: 25px; display: flex; flex-direction: column; box-sizing: border-box;">
-            
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h3 style="font-family:'Montserrat'; margin:0; font-size:1.1rem;">HAKKINDA</h3>
-                <span onclick="closeAll()" style="cursor:pointer; font-size:1.5rem; line-height: 1;">&times;</span>
-            </div>
-        
-            <div style="font-size: 0.9rem; line-height: 1.6; overflow-y: auto;">
-                <p><strong>Odak Defteri v3.0</strong></p>
-                <p>Bu uygulama, günlük planlarınızı ve notlarınızı yerel hafızada (LocalStorage) saklayan, hafif ve hızlı bir planlayıcıdır.</p>
-                
-                <hr style="border: 0; border-top: 1px solid var(--border); margin: 15px 0;">
-                
-                <p>🚀 <b>Özellikler:</b></p>
-                <ul style="padding-left: 20px;">
-                    <li>Hızlı görev ekleme</li>
-                    <li>Öncelik belirleme (! ve ?)</li>
-                    <li>Karanlık/Aydınlık mod</li>
-                    <li>Veriler tamamen tarayıcınızda kalır.</li>
-                </ul>
-        
-                <div style="margin-top: 20px; padding: 10px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; font-size: 0.8rem; color: var(--warning); border: 1px dashed var(--warning);">
-                    ⚠️ <b>Geliştirme Aşaması:</b> Bu uygulama henüz Beta sürümündedir. Kullanım sırasında çeşitli hatalarla karşılaşmanız olasıdır. Anlayışınız için teşekkür ederiz.
+            <div id="about-panel" class="notes-panel-style" style="position: fixed; top: 0; right: -350px; width: 320px; height: 100%; background: var(--card); border-left: 1px solid var(--border); z-index: 10001; transition: 0.3s ease; padding: 25px; display: flex; flex-direction: column; box-sizing: border-box;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h3 style="font-family:'Montserrat'; margin:0; font-size:1.1rem;">HAKKINDA</h3>
+                    <span onclick="closeAll()" style="cursor:pointer; font-size:1.5rem; line-height: 1;">&times;</span>
                 </div>
-            </div>
-        </div> 
+                
+                <div style="font-size: 0.9rem; line-height: 1.6; overflow-y: auto;">
+                    <p><strong>Odak Defteri v3.0</strong></p>
+                    <p>Bu uygulama, verilerinizi tamamen yerel hafızada (LocalStorage) saklayan bir planlayıcıdır.</p>
+                    <hr style="border: 0; border-top: 1px solid var(--border); margin: 15px 0;">
+                    <p>🚀 <b>Özellikler:</b></p>
+                    <ul style="padding-left: 20px;">
+                        <li>Hızlı görev ekleme</li>
+                        <li>Öncelik belirleme (! ve ?)</li>
+                        <li>Karanlık/Aydınlık mod</li>
+                    </ul>
+                    <div style="margin-top: 20px; padding: 10px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; font-size: 0.8rem; color: var(--warning); border: 1px dashed var(--warning);">
+                        ⚠️ <b>Geliştirme Aşaması:</b> Bu uygulama henüz Beta sürümündedir. Kullanım sırasında çeşitli hatalarla karşılaşmanız olasıdır.
+                    </div>
+                </div>
+            </div> <div id="confirm-modal" class="custom-modal" onclick="if(event.target==this) closeConfirmModal()">
+                <div class="modal-content">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🗑️</div>
+                    <h3>Emin misin?</h3>
+                    <p>Bu gün kartı ve içindeki tüm görevler silinecek. Bu işlem geri alınamaz!</p>
+                    <div class="modal-buttons">
+                        <button onclick="closeConfirmModal()" class="btn-cancel">Vazgeç</button>
+                        <button id="confirm-delete-btn" class="btn-confirm">Evet, Sil</button>
+                    </div>
+                </div>
+            </div> 
         <div id="confirm-modal" class="custom-modal" onclick="if(event.target==this) closeConfirmModal()">
             <div class="modal-content">
                 <div style="font-size: 2rem; margin-bottom: 10px;">🗑️</div>
