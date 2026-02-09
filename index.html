@@ -7,6 +7,24 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        #toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #2ecc71; /* Başarı yeşili */
+    color: white;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-weight: 500;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 9999;
+}
+#toast.show {
+    transform: translateX(-50%) translateY(0);
+}
+         
         #about-panel.open { right: 0 !important; }
         :root {
             --bg: #f0f2f5; --card: #ffffff; --accent: #0969da; --text: #1f2328; 
@@ -382,6 +400,20 @@
         function ciz() {
             const board = document.getElementById('board');
             board.innerHTML = '';
+
+            function showToast(mesaj, renk = "#2ecc71") {
+                const toast = document.getElementById('toast');
+                toast.innerText = mesaj;
+                toast.style.background = renk;
+                toast.classList.add('show');
+                
+                // 3 saniye sonra geri sakla
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+
             
             gunler.forEach((gun, gIdx) => {
                 const bitti = gun.gorevler.filter(t => t.ok).length;
@@ -481,5 +513,6 @@
 
         ciz();
     </script>
+    <div id="toast">İşlem Başarılı!</div>
 </body>
 </html>
