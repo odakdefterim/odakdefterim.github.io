@@ -7,89 +7,6 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-                        .custom-modal {
-                    position: fixed; 
-                    inset: 0; 
-                    background: rgba(0,0,0,0.7); /* Arkadaki içeriği karartır */
-                    display: none; /* Başlangıçta gizli */
-                    align-items: center; 
-                    justify-content: center;
-                    z-index: 10000; /* En üstte görünmesi için */
-                    backdrop-filter: blur(4px); /* Arkayı bulanıklaştırır */
-                }
-                
-                /* Modal kutusunun kendisi */
-                .modal-content {
-                    background: var(--card); 
-                    padding: 30px; 
-                    border-radius: 16px;
-                    width: 320px; 
-                    text-align: center; 
-                    border: 1px solid var(--border);
-                    box-shadow: var(--shadow); 
-                    transform: scale(0.9); 
-                    transition: 0.2s ease;
-                }
-                
-                /* Modal açıldığında devreye giren sınıf */
-                .custom-modal.active { 
-                    display: flex; 
-                }
-                
-                .custom-modal.active .modal-content { 
-                    transform: scale(1); 
-                }
-                
-                .modal-content h3 { 
-                    margin: 0 0 10px 0; 
-                    color: var(--danger); 
-                    font-family: 'Montserrat'; 
-                }
-                
-                .modal-content p { 
-                    font-size: 0.9rem; 
-                    opacity: 0.8; 
-                    margin-bottom: 25px; 
-                }
-                
-                /* Buton grubu */
-                .modal-buttons { 
-                    display: flex; 
-                    gap: 10px; 
-                }
-                
-                .modal-buttons button {
-                    flex: 1; 
-                    padding: 12px; 
-                    border: none; 
-                    border-radius: 8px;
-                    cursor: pointer; 
-                    font-weight: 600; 
-                    font-family: 'Inter'; 
-                    transition: 0.2s;
-                }
-                
-                .btn-cancel { 
-                    background: var(--bg); 
-                    color: var(--text); 
-                }
-                
-                .btn-confirm { 
-                    background: var(--danger); 
-                    color: white; 
-                }
-                
-                .btn-confirm:hover { 
-                    opacity: 0.9; 
-                    transform: translateY(-2px); 
-                }
-
-
-
-
-
-
-        
         #about-panel.open { right: 0 !important; }
         :root {
             --bg: #f0f2f5; --card: #ffffff; --accent: #0969da; --text: #1f2328; 
@@ -291,34 +208,7 @@
         .input-box:focus { border-color: var(--accent); }
         .info-note { font-size: 9px; opacity: 0.6; margin-bottom: 5px; font-style: italic; display: flex; justify-content: space-between; }
         footer { padding: 10px; text-align: center; font-size: 0.7rem; opacity: 0.5; border-top: 1px solid var(--border); flex-shrink: 0; }
-    
-    
-                        /* Modern Onay Kutusu Tasarımı */
-                #custom-confirm {
-                    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
-                    background: var(--card); border: 1px solid var(--border); padding: 25px;
-                    border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-                    z-index: 10002; visibility: hidden; opacity: 0; transition: 0.2s;
-                    width: 280px; text-align: center;
-                }
-                #custom-confirm.active { visibility: visible; opacity: 1; transform: translate(-50%, -50%) scale(1); }
-                #custom-confirm h4 { margin: 0 0 10px 0; color: var(--text); }
-                #custom-confirm p { font-size: 0.9rem; color: var(--text); opacity: 0.8; margin-bottom: 20px; }
-                .confirm-btns { display: flex; gap: 10px; justify-content: center; }
-                .confirm-btns button { 
-                    padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; 
-                    font-weight: 600; font-family: 'Inter'; transition: 0.2s;
-                }
-                .btn-yes { background: var(--danger); color: white; }
-                .btn-no { background: var(--border); color: var(--text); }
-                .btn-yes:hover { opacity: 0.9; transform: translateY(-2px); }
-    
-    
-    
- 
-    
     </style>
-    
 </head>
 <body data-theme="dark">
     <div id="ptr-indicator">
@@ -543,55 +433,12 @@
             }, 50);
         }
 
-                // --- ONAY EKLENTİSİ VE GÜNCELLENMİŞ SİLME FONKSİYONLARI ---
-                
-                let confirmCallback = null;
-
-function showConfirm(title, msg, onConfirm) {
-    document.getElementById('confirm-title').innerText = title;
-    document.getElementById('confirm-msg').innerText = msg;
-    document.getElementById('custom-confirm').classList.add('active');
-    document.getElementById('overlay').classList.add('active');
-    confirmCallback = onConfirm;
-}
-
-function closeConfirm() {
-    document.getElementById('custom-confirm').classList.remove('active');
-    document.getElementById('overlay').classList.remove('active');
-}
-
-// "Evet" butonuna basıldığında çalışacak tetikleyici
-document.getElementById('confirm-ok-btn').onclick = () => {
-    if(confirmCallback) confirmCallback();
-    closeConfirm();
-};
-
-        // --- GÜNCELLENMİŞ SİLME FONKSİYONLARI ---
-        
-        function kartSil(idx) {
-            showConfirm("Günü Sil", "Bu planı tamamen silmek istediğine emin misin?", () => {
-                gunler.splice(idx, 1);
-                ciz();
-            });
+        function kartSil(idx) { 
+            if(confirm("Bu günü silmek istediğinize emin misiniz?")) {
+                gunler.splice(idx, 1); 
+                ciz(); 
+            }
         }
-        
-        function deleteNote(idx) {
-            showConfirm("Notu Sil", "Bu not kalıcı olarak silinecek.", () => {
-                notlar.splice(idx, 1);
-                localStorage.setItem('odak_notlar_v9', JSON.stringify(notlar));
-                drawNotes();
-            });
-        }
-                
-                // Görevleri toplu silme veya temizleme gibi bir onay mekanizması eklemek istersen:
-                function temizleOnayi() {
-                    if(confirm("Tüm tamamlanmış görevleri temizlemek ister misiniz?")) {
-                        gunler.forEach(gun => {
-                            gun.gorevler = gun.gorevler.filter(t => !t.ok);
-                        });
-                        ciz();
-                    }
-                }
 
         function ekle(e, idx) {
             const yazi = e.target.value.trim();
@@ -634,37 +481,5 @@ document.getElementById('confirm-ok-btn').onclick = () => {
 
         ciz();
     </script>
-            /* Modern Onay Kutusu Tasarımı */
-        #custom-confirm {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
-            background: var(--card); border: 1px solid var(--border); padding: 25px;
-            border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            z-index: 10002; visibility: hidden; opacity: 0; transition: 0.2s;
-            width: 280px; text-align: center;
-        }
-        #custom-confirm.active { visibility: visible; opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        #custom-confirm h4 { margin: 0 0 10px 0; color: var(--text); }
-        #custom-confirm p { font-size: 0.9rem; color: var(--text); opacity: 0.8; margin-bottom: 20px; }
-        .confirm-btns { display: flex; gap: 10px; justify-content: center; }
-        .confirm-btns button { 
-            padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; 
-            font-weight: 600; font-family: 'Inter'; transition: 0.2s;
-        }
-        .btn-yes { background: var(--danger); color: white; }
-        .btn-no { background: var(--border); color: var(--text); }
-        .btn-yes:hover { opacity: 0.9; transform: translateY(-2px); }
-
-    
-    <div id="custom-confirm">
-    <h4 id="confirm-title">Emin misiniz?</h4>
-    <p id="confirm-msg">Bu işlem geri alınamaz.</p>
-    <div class="confirm-btns">
-        <button class="btn-no" onclick="closeConfirm()">Vazgeç</button>
-        <button class="btn-yes" id="confirm-ok-btn">Evet, Sil</button>
-    </div>
-</div>
-
-    
-    
 </body>
 </html>
