@@ -7,88 +7,6 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        /* --- ÖZEL ONAY MODALI TASARIMI --- */
-.custom-modal {
-    position: fixed; 
-    inset: 0; 
-    background: rgba(0,0,0,0.7); /* Arkadaki içeriği karartır */
-    display: none; /* Başlangıçta gizli */
-    align-items: center; 
-    justify-content: center;
-    z-index: 10000; /* En üstte görünmesi için */
-    backdrop-filter: blur(4px); /* Arkayı bulanıklaştırır */
-}
-
-/* Modal kutusunun kendisi */
-.modal-content {
-    background: var(--card); 
-    padding: 30px; 
-    border-radius: 16px;
-    width: 320px; 
-    text-align: center; 
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow); 
-    transform: scale(0.9); 
-    transition: 0.2s ease;
-}
-
-/* Modal açıldığında devreye giren sınıf */
-.custom-modal.active { 
-    display: flex; 
-}
-
-.custom-modal.active .modal-content { 
-    transform: scale(1); 
-}
-
-.modal-content h3 { 
-    margin: 0 0 10px 0; 
-    color: var(--danger); 
-    font-family: 'Montserrat'; 
-}
-
-.modal-content p { 
-    font-size: 0.9rem; 
-    opacity: 0.8; 
-    margin-bottom: 25px; 
-}
-
-/* Buton grubu */
-.modal-buttons { 
-    display: flex; 
-    gap: 10px; 
-}
-
-.modal-buttons button {
-    flex: 1; 
-    padding: 12px; 
-    border: none; 
-    border-radius: 8px;
-    cursor: pointer; 
-    font-weight: 600; 
-    font-family: 'Inter'; 
-    transition: 0.2s;
-}
-
-.btn-cancel { 
-    background: var(--bg); 
-    color: var(--text); 
-}
-
-.btn-confirm { 
-    background: var(--danger); 
-    color: white; 
-}
-
-.btn-confirm:hover { 
-    opacity: 0.9; 
-    transform: translateY(-2px); 
-}
-
-
-
-
-        
         #about-panel.open { right: 0 !important; }
         :root {
             --bg: #f0f2f5; --card: #ffffff; --accent: #0969da; --text: #1f2328; 
@@ -314,48 +232,29 @@
         <textarea id="note-input" class="input-box" style="height: 100px; margin-bottom:10px; resize: none;" placeholder="Kalıcı bir not ekle..."></textarea>
         <button onclick="saveNote()" style="background:var(--accent); color:white; border:none; padding:12px; border-radius:8px; cursor:pointer; font-weight:600; width:100%;">Ekle</button>
         <div id="notes-list" style="margin-top:20px; overflow-y:auto; flex-grow:1; padding-right: 5px;"></div>
-            <div id="about-panel" class="notes-panel-style" style="position: fixed; top: 0; right: -350px; width: 320px; height: 100%; background: var(--card); border-left: 1px solid var(--border); z-index: 10001; transition: 0.3s ease; padding: 25px; display: flex; flex-direction: column; box-sizing: border-box;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <h3 style="font-family:'Montserrat'; margin:0; font-size:1.1rem;">HAKKINDA</h3>
-                    <span onclick="closeAll()" style="cursor:pointer; font-size:1.5rem; line-height: 1;">&times;</span>
-                </div>
-                
-                <div style="font-size: 0.9rem; line-height: 1.6; overflow-y: auto;">
-                    <p><strong>Odak Defteri v3.0</strong></p>
-                    <p>Bu uygulama, verilerinizi tamamen yerel hafızada (LocalStorage) saklayan bir planlayıcıdır.</p>
-                    <hr style="border: 0; border-top: 1px solid var(--border); margin: 15px 0;">
-                    <p>🚀 <b>Özellikler:</b></p>
-                    <ul style="padding-left: 20px;">
-                        <li>Hızlı görev ekleme</li>
-                        <li>Öncelik belirleme (! ve ?)</li>
-                        <li>Karanlık/Aydınlık mod</li>
-                    </ul>
-                    <div style="margin-top: 20px; padding: 10px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; font-size: 0.8rem; color: var(--warning); border: 1px dashed var(--warning);">
-                        ⚠️ <b>Geliştirme Aşaması:</b> Bu uygulama henüz Beta sürümündedir. Kullanım sırasında çeşitli hatalarla karşılaşmanız olasıdır.
-                    </div>
-                </div>
-            </div> <div id="confirm-modal" class="custom-modal" onclick="if(event.target==this) closeConfirmModal()">
-                <div class="modal-content">
-                    <div style="font-size: 2rem; margin-bottom: 10px;">🗑️</div>
-                    <h3>Emin misin?</h3>
-                    <p>Bu gün kartı ve içindeki tüm görevler silinecek. Bu işlem geri alınamaz!</p>
-                    <div class="modal-buttons">
-                        <button onclick="closeConfirmModal()" class="btn-cancel">Vazgeç</button>
-                        <button id="confirm-delete-btn" class="btn-confirm">Evet, Sil</button>
-                    </div>
-                </div>
-            </div> 
-        <div id="confirm-modal" class="custom-modal" onclick="if(event.target==this) closeConfirmModal()">
-            <div class="modal-content">
-                <div style="font-size: 2rem; margin-bottom: 10px;">🗑️</div>
-                <h3>Emin misin?</h3>
-                <p>Bu gün kartı ve içindeki tüm görevler silinecek. Bu işlem geri alınamaz!</p>
-                <div class="modal-buttons">
-                    <button onclick="closeConfirmModal()" class="btn-cancel">Vazgeç</button>
-                    <button id="confirm-delete-btn" class="btn-confirm">Evet, Sil</button>
-                </div>
-            </div>
-        </div>
+    </div>
+    <div id="about-panel" class="notes-panel-style" style="position: fixed; top: 0; right: -350px; width: 320px; height: 100%; background: var(--card); border-left: 1px solid var(--border); z-index: 9999; transition: 0.3s ease; padding: 25px; display: flex; flex-direction: column; box-sizing: border-box;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h3 style="font-family:'Montserrat'; margin:0; font-size:1.1rem;">HAKKINDA</h3>
+        <span onclick="closeAll()" style="cursor:pointer; font-size:1.5rem; line-height: 1;">&times;</span>
+    </div>
+    <div style="font-size: 0.9rem; line-height: 1.6;">
+        <p><strong>Odak Defteri v3.0</strong></p>
+        <p>Bu uygulama, günlük planlarınızı ve notlarınızı yerel hafızada (LocalStorage) saklayan, hafif ve hızlı bir planlayıcıdır.</p>
+        <hr style="border: 0; border-top: 1px solid var(--border); margin: 15px 0;">
+        <p>🚀 <b>Özellikler:</b></p>
+        <ul>
+            <li>Hızlı görev ekleme</li>
+            <li>Öncelik belirleme (! ve ?)</li>
+            <li>Karanlık/Aydınlık mod</li>
+            <li>Veriler tamamen tarayıcınızda kalır.</li>
+        </ul>
+
+        <p style="margin-top: 20px; padding: 10px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; font-size: 0.8rem; color: var(--warning); border: 1px dashed var(--warning);">
+    ⚠️ <b>Geliştirme Aşaması:</b> Bu uygulama henüz Beta sürümündedir. Kullanım sırasında çeşitli hatalarla karşılaşmanız olasıdır.Anlayışınız için teşekkür ederiz
+</p>
+    </div>
+</div>
 
     <header id="app-header">
         <div class="logo-area">
@@ -533,47 +432,14 @@
                 scrollArea.scrollTo({ left: scrollArea.scrollWidth, behavior: 'smooth' }); 
             }, 50);
         }
-            // 1. Bu satırı fonksiyonların en üstüne, diğer değişkenlerin (gunler, notlar vb.) yanına koy
-            let silinecekIndex = null; 
-            
-            // 2. Eski kartSil yerine bu bloğu yapıştır
-            function kartSil(idx) {
-                silinecekIndex = idx; 
-                const modal = document.getElementById('confirm-modal');
-                if (modal) {
-                    modal.classList.add('active'); 
-                } else {
-                    // Eğer modalı bulamazsa eski yöntemi kullan (güvenlik önlemi)
-                    if(confirm("Bu günü silmek istediğinize emin misiniz?")) {
-                        gunler.splice(idx, 1);
-                        localStorage.setItem('ajanda_v8', JSON.stringify(gunler));
-                        ciz();
-                    }
-                }
+
+        function kartSil(idx) { 
+            if(confirm("Bu günü silmek istediğinize emin misiniz?")) {
+                gunler.splice(idx, 1); 
+                ciz(); 
             }
-            
-            // 3. Bu kapatma fonksiyonunu da ekle
-            function closeConfirmModal() {
-                const modal = document.getElementById('confirm-modal');
-                if (modal) modal.classList.remove('active');
-                silinecekIndex = null;
-            }
-            
-            // 4. "Evet, Sil" butonuna basıldığında ne olacağını belirle
-            // Bu kısmı script etiketinin en altına, fonksiyonların dışına koyabilirsin
-            document.addEventListener('DOMContentLoaded', () => {
-                const confirmBtn = document.getElementById('confirm-delete-btn');
-                if (confirmBtn) {
-                    confirmBtn.onclick = function() {
-                        if (silinecekIndex !== null) {
-                            gunler.splice(silinecekIndex, 1);
-                            localStorage.setItem('ajanda_v8', JSON.stringify(gunler));
-                            ciz();
-                            closeConfirmModal();
-                        }
-                    };
-                }
-            });
+        }
+
         function ekle(e, idx) {
             const yazi = e.target.value.trim();
             if(!yazi) return;
