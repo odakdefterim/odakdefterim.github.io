@@ -3,12 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Odak Defteri v3.0.1</title>
+    <title>Odak Defteri Test v3.0.2</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         #about-panel.open { right: 0 !important; }
         :root {
+            
+             [data-preset="default"] { }
+            
+            [data-preset="deep"] {
+                --bg:#0b1d2a;
+                --card:#132b3a;
+                --accent:#3aa6ff;
+                --text:#d4ecff;
+                --border:#21485f;
+            }
+            
+            [data-preset="terminal"] {
+                --bg:#0a0f0a;
+                --card:#0f1a0f;
+                --accent:#00ff88;
+                --text:#b6ffd6;
+                --border:#1f3b1f;
+            }
+            
+            [data-preset="paper"] {
+                --bg:#f3e7c9;
+                --card:#fff6dc;
+                --accent:#a37b2c;
+                --text:#3a2e1f;
+                --border:#e0cfa0;
+            }
+            
+
+            
             --bg: #f0f2f5; --card: #ffffff; --accent: #0969da; --text: #1f2328; 
             --border: #d0d7de; --danger: #cf222e; --warning: #9a6700; 
             --input: #ffffff; --shadow: 0 4px 12px rgba(0,0,0,0.05);
@@ -208,6 +237,31 @@
         .input-box:focus { border-color: var(--accent); }
         .info-note { font-size: 9px; opacity: 0.6; margin-bottom: 5px; font-style: italic; display: flex; justify-content: space-between; }
         footer { padding: 10px; text-align: center; font-size: 0.7rem; opacity: 0.5; border-top: 1px solid var(--border); flex-shrink: 0; }
+            
+        
+                .theme-card{
+        padding:12px 14px;
+        margin-bottom:10px;
+        border-radius:14px;
+        border:1px solid var(--border);
+        cursor:pointer;
+        text-align:center;
+        font-weight:500;
+        font-size:0.9rem;
+        background:linear-gradient(145deg,var(--card),rgba(255,255,255,0.02));
+        transition:0.2s;
+        }
+        
+        .theme-card:hover{
+        border-color:var(--accent);
+        transform:translateY(-2px);
+        }
+
+            
+            
+            
+            
+            
     </style>
 </head>
 <body data-theme="dark">
@@ -221,7 +275,8 @@
         <h2 style="font-family:'Montserrat'; color:var(--accent); margin-bottom:30px; font-size: 1.5rem;">MENU</h2>
         <div class="menu-item" onclick="closeAll()">📅 Günlük Plan</div>
         <div class="menu-item" onclick="openNotes()">📝 Notlarım</div>
-        <<div class="menu-item" onclick="openAbout()">ℹ️ Hakkında</div>
+        <div class="menu-item" onclick="openAbout()">ℹ️ Hakkında</div>
+        <div class="menu-item" onclick="openSettings()">⚙️ Ayarlar</div>
     </nav>
 
     <div id="notes-panel">
@@ -238,8 +293,58 @@
         <h3 style="font-family:'Montserrat'; margin:0; font-size:1.1rem;">HAKKINDA</h3>
         <span onclick="closeAll()" style="cursor:pointer; font-size:1.5rem; line-height: 1;">&times;</span>
     </div>
+        <div id="settings-panel" style="
+position: fixed;
+top: 0;
+right: -350px;
+width: 320px;
+height: 100%;
+background: var(--card);
+border-left: 1px solid var(--border);
+z-index: 9999;
+transition: 0.3s ease;
+padding: 25px;
+display: flex;
+flex-direction: column;
+box-sizing: border-box;
+">
+
+
+
+            
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <h3 style="font-family:'Montserrat'; margin:0; font-size:1.1rem;">AYARLAR</h3>
+    <span onclick="closeAll()" style="cursor:pointer; font-size:1.5rem;">×</span>
+
+    
+</div>
+<h4 style="margin-top:10px;">Görünüm Teması</h4>
+
+<div class="theme-card" onclick="presetSet('default')">Varsayılan</div>
+<div class="theme-card" onclick="presetSet('deep')">Derin Deniz</div>
+<div class="theme-card" onclick="presetSet('terminal')">Terminal</div>
+<div class="theme-card" onclick="presetSet('paper')">Saman Kağıdı</div>
+
+<!-- TEMA -->
+<p style="font-weight:600;">Tema</p>
+
+<div class="menu-item" onclick="temaSet('dark')">🌙 Karanlık</div>
+<div class="menu-item" onclick="temaSet('light')">☀️ Aydınlık</div>
+
+<hr style="border:0; border-top:1px solid var(--border); margin:15px 0;">
+
+<!-- FONT -->
+<p style="font-weight:600;">Font</p>
+
+<div class="menu-item" onclick="fontSet('Inter')">Inter</div>
+<div class="menu-item" onclick="fontSet('Montserrat')">Montserrat</div>
+<div class="menu-item" onclick="fontSet('system')">System Font</div>
+
+</div>
+
     <div style="font-size: 0.9rem; line-height: 1.6;">
-        <p><strong>Odak Defteri v3.0.1</strong></p>
+        <p><strong>Odak Defteri Test v3.0.2</strong></p>
         <p>Bu uygulama, günlük planlarınızı ve notlarınızı yerel hafızada (LocalStorage) saklayan, hafif ve hızlı bir planlayıcıdır.</p>
         <hr style="border: 0; border-top: 1px solid var(--border); margin: 15px 0;">
         <p>🚀 <b>Özellikler:</b></p>
@@ -260,7 +365,7 @@
         <div class="logo-area">
             <button class="burger" onclick="toggleMenu()">☰</button>
             <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
-            <h1>ODAK DEFTERİ <span style="font-size: 0.7rem; opacity: 0.5;">v3.0.1</span></h1>
+            <h1>ODAK DEFTERİ <span style="font-size: 0.7rem; opacity: 0.5;">Test v3.0.2</span></h1>
         </div>
         <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">Karanlık Mod</button>
     </header>
@@ -351,15 +456,17 @@
         }
         
         function closeAll() {
-            // Her şeyi başlangıç durumuna getirir
             document.getElementById('sidebar').classList.remove('open');
             document.getElementById('notes-panel').classList.remove('open');
-            // Hakkında paneli için hem class hem style kontrolü (garanti olsun diye)
+        
             const about = document.getElementById('about-panel');
-            if(about) about.classList.remove('open'); 
-            
+            if(about) about.classList.remove('open');
+        
+            document.getElementById('settings-panel').style.right = "-350px";
+        
             document.getElementById('overlay').classList.remove('active');
         }
+
 
         scrollArea.addEventListener('wheel', (e) => {
             if (e.deltaY !== 0 && window.innerWidth > 800) {
@@ -480,6 +587,40 @@
         }
 
         ciz();
+        function openSettings(){
+    closeAll();
+    document.getElementById('settings-panel').style.right = "0";
+    document.getElementById('overlay').classList.add('active');
+}
+
+        function fontSet(font){
+
+    let f;
+
+    if(font === "system")
+        f = "system-ui, sans-serif";
+    else if(font === "Montserrat")
+        f = "'Montserrat', sans-serif";
+    else
+        f = "'Inter', sans-serif";
+
+    document.body.style.fontFamily = f;
+    localStorage.setItem("odak_font", font);
+}
+
+        const kayitliFont = localStorage.getItem("odak_font") || "Inter";
+fontSet(kayitliFont);
+
+        function presetSet(name){
+    document.body.setAttribute("data-preset", name);
+    localStorage.setItem("preset", name);
+}
+
+        document.body.setAttribute(
+    "data-preset",
+    localStorage.getItem("preset") || "default"
+);
+
     </script>
 </body>
 </html>
