@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Odak Defteri v3.0.2</title>
+    <title>Odak Defteri v3.0.3</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -256,10 +256,46 @@
         border-color:var(--accent);
         transform:translateY(-2px);
         }
+.theme-card.active{
+    background: linear-gradient(145deg,
+        rgba(0,0,0,0.35),
+        rgba(0,0,0,0.15)
+    );
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+}
+
 
             
-            
-            
+          .font-sec {
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 0.95rem;
+    transition: 0.25s;
+    background: var(--card);
+}
+
+.font-sec:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+  
+.font-sec.active{
+    background: linear-gradient(145deg,
+        rgba(0,0,0,0.35),
+        rgba(0,0,0,0.15)
+    );
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+}
+
+
             
             
     </style>
@@ -292,14 +328,16 @@
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
         <h3 style="font-family:'Montserrat'; margin:0; font-size:1.1rem;">HAKKINDA</h3>
         <span onclick="closeAll()" style="cursor:pointer; font-size:1.5rem; line-height: 1;">&times;</span>
-    </div>
-        <div id="settings-panel" style="
+    </div>        
+            
+<div id="settings-panel" style="
 position: fixed;
 top: 0;
 right: -350px;
 width: 320px;
 height: 100%;
 background: var(--card);
+color: var(--text);
 border-left: 1px solid var(--border);
 z-index: 9999;
 transition: 0.3s ease;
@@ -335,16 +373,26 @@ box-sizing: border-box;
 <hr style="border:0; border-top:1px solid var(--border); margin:15px 0;">
 
 <!-- FONT -->
+<!-- FONT -->
 <p style="font-weight:600;">Font</p>
 
-<div class="menu-item" onclick="fontSet('Inter')">Inter</div>
-<div class="menu-item" onclick="fontSet('Montserrat')">Montserrat</div>
-<div class="menu-item" onclick="fontSet('system')">System Font</div>
+<div class="font-sec" onclick="fontSet('Inter')" style="font-family:Inter;">
+    Inter
+</div>
+
+<div class="font-sec" onclick="fontSet('Montserrat')" style="font-family:Montserrat;">
+    Montserrat
+</div>
+
+<div class="font-sec" onclick="fontSet('system')" style="font-family:system-ui;">
+    Sistem Font
+</div>
+
 
 </div>
 
     <div style="font-size: 0.9rem; line-height: 1.6;">
-        <p><strong>Odak Defteri v3.0.2</strong></p>
+        <p><strong>Odak Defteri v3.0.3</strong></p>
         <p>Bu uygulama, günlük planlarınızı ve notlarınızı yerel hafızada (LocalStorage) saklayan, hafif ve hızlı bir planlayıcıdır.</p>
         <hr style="border: 0; border-top: 1px solid var(--border); margin: 15px 0;">
         <p>🚀 <b>Özellikler:</b></p>
@@ -356,8 +404,7 @@ box-sizing: border-box;
         </ul>
 
         <p style="margin-top: 20px; padding: 10px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; font-size: 0.8rem; color: var(--warning); border: 1px dashed var(--warning);">
-    ⚠️ <b>Geliştirme Aşaması:</b> Bu uygulama henüz Beta sürümündedir. Kullanım sırasında çeşitli hatalarla karşılaşmanız olasıdır.Anlayışınız için teşekkür ederiz.
-            En iyi deneyim için bilgisayar kullanınız.
+    ⚠️ <b>Geliştirme Aşaması:</b> Bu uygulama henüz Beta sürümündedir. Kullanım sırasında çeşitli hatalarla karşılaşmanız olasıdır.Anlayışınız için teşekkür ederiz.En iyi deneyim için bilgisayar kullanınız.
 </p>
     </div>
 </div>
@@ -366,7 +413,7 @@ box-sizing: border-box;
         <div class="logo-area">
             <button class="burger" onclick="toggleMenu()">☰</button>
             <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
-            <h1>ODAK DEFTERİ <span style="font-size: 0.7rem; opacity: 0.5;">v3.0.2</span></h1>
+            <h1>ODAK DEFTERİ <span style="font-size: 0.7rem; opacity: 0.5;">v3.0.3</span></h1>
         </div>
         <button class="theme-toggle" onclick="temaDegistir()" id="theme-btn">Karanlık Mod</button>
     </header>
@@ -594,7 +641,7 @@ box-sizing: border-box;
     document.getElementById('overlay').classList.add('active');
 }
 
-        function fontSet(font){
+ function fontSet(font){
 
     let f;
 
@@ -607,20 +654,37 @@ box-sizing: border-box;
 
     document.body.style.fontFamily = f;
     localStorage.setItem("odak_font", font);
+
+    // aktif kart efekti
+    document.querySelectorAll(".font-sec").forEach(el=>{
+        el.classList.remove("active");
+    });
+
+    const aktif = document.querySelector(`[onclick="fontSet('${font}')"]`);
+    if(aktif) aktif.classList.add("active");
 }
+
 
         const kayitliFont = localStorage.getItem("odak_font") || "Inter";
 fontSet(kayitliFont);
 
-        function presetSet(name){
+function presetSet(name){
+
     document.body.setAttribute("data-preset", name);
     localStorage.setItem("preset", name);
+
+    // aktif kart efekti
+    document.querySelectorAll(".theme-card").forEach(el=>{
+        el.classList.remove("active");
+    });
+
+    const aktif = document.querySelector(`[onclick="presetSet('${name}')"]`);
+    if(aktif) aktif.classList.add("active");
 }
 
-        document.body.setAttribute(
-    "data-preset",
-    localStorage.getItem("preset") || "default"
-);
+const kayitliTema = localStorage.getItem("preset") || "default";
+presetSet(kayitliTema);
+
 
     </script>
 </body>
