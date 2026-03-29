@@ -640,6 +640,49 @@ box-sizing: border-box;
         }
 
         ciz();
+        function kontrolHubGosterimi() {
+    const sonGiris = localStorage.getItem('son_ziyaret');
+    const bugun = new Date().toLocaleDateString('tr-TR');
+    const board = document.getElementById('board');
+    
+    // Eğer bugün hiç girilmediyse VE hiç kart yoksa göster
+    if (sonGiris !== bugun && gunler.length === 0) {
+        const hubHtml = `
+            <div id="smart-hub" style="
+                width: 100%; 
+                max-width: 600px; 
+                margin: 50px auto; 
+                text-align: center; 
+                padding: 40px; 
+                background: var(--card); 
+                border-radius: 24px; 
+                border: 1px solid var(--border);
+                box-shadow: var(--shadow);
+                animation: fadeIn 0.8s ease;
+            ">
+                <h2 style="font-family:'Montserrat'; font-size: 1.8rem; margin-bottom: 10px;">Bugün Yeni Bir Başlangıç 🚀</h2>
+                <p style="opacity: 0.7; margin-bottom: 25px;">Hedeflerine giden yolda bugün neler başaracaksın?</p>
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <button onclick="yeniGun(); kapatHub();" style="background: var(--accent); color: white; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 600; cursor: pointer;">📅 Plan Yap</button>
+                    <button onclick="location.href='https://odaksayacim.github.io'" style="background: transparent; color: var(--text); border: 1px solid var(--border); padding: 12px 25px; border-radius: 12px; cursor: pointer;">🎯 Odaklan</button>
+                </div>
+                <button onclick="kapatHub()" style="margin-top: 20px; background: none; border: none; color: var(--text); opacity: 0.4; font-size: 0.7rem; cursor: pointer; text-decoration: underline;">Bunu bugün bir daha gösterme</button>
+            </div>
+        `;
+        board.innerHTML = hubHtml + board.innerHTML;
+    }
+}
+
+function kapatHub() {
+    const bugun = new Date().toLocaleDateString('tr-TR');
+    localStorage.setItem('son_ziyaret', bugun);
+    const hub = document.getElementById('smart-hub');
+    if(hub) hub.style.display = 'none';
+    ciz(); // Ekranı tazele
+}
+
+// Sayfa açıldığında çalıştır
+kontrolHubGosterimi();
         function openSettings(){
     closeAll();
     document.getElementById('settings-panel').style.right = "0";
