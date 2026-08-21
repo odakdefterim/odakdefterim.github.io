@@ -1,4 +1,4 @@
-# Odak Defteri
+# Odak Defterim
 
 Günlük planlarınızı ve notlarınızı tarayıcınızda saklayan basit ve hızlı bir planlayıcı web uygulaması.
 
