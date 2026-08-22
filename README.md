@@ -36,4 +36,4 @@ v3.0.3
 
 ## Lisans
 
-© 2026 Odak Defteri
+© 2026 Odak Defterim
