@@ -6,15 +6,15 @@ Günlük planlarınızı ve notlarınızı tarayıcınızda saklayan basit ve h�
 
 ## Özellikler
 
-- 📅 Günlük plan oluşturma
-- 📝 Genel notlar ekleme
-- ⏱️ Odak sayacı
-- 🎯 YKS geri sayımı
-- ❗ Öncelik belirleme (`!` ve `?` işaretleri ile)
-- 🌙 Karanlık / ☀️ Aydınlık mod
-- 🎨 Farklı görünüm temaları (Varsayılan, Derin Deniz, Terminal, Saman Kağıdı)
-- 🔤 Font seçenekleri (Inter, Montserrat, Sistem Font)
-- 💾 Veriler tamamen tarayıcıda (LocalStorage) saklanır, herhangi bir sunucuya gönderilmez
+-  Günlük plan oluşturma
+-  Genel notlar ekleme
+-  Odak sayacı
+-  YKS geri sayımı
+-  Öncelik belirleme (`!` ve `?` işaretleri ile)
+-  Karanlık /  Aydınlık mod
+-  Farklı görünüm temaları (Varsayılan, Derin Deniz, Terminal, Saman Kağıdı)
+-  Font seçenekleri (Inter, Montserrat, Sistem Font)
+-  Veriler tamamen tarayıcıda (LocalStorage) saklanır, herhangi bir sunucuya gönderilmez
 
 ## Kullanım
 
